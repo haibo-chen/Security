@@ -10,7 +10,7 @@ namespace insp.Security.Strategy
 {
     public class DateDetailRecord
     {
-        #region 基本信息
+        #region 基本信息1
         /// <summary>日期</summary>             
         public DateTime date;
         /// <summary>资金</summary>             
