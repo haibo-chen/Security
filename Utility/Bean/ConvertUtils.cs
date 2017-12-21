@@ -157,6 +157,8 @@ namespace insp.Utility.Bean
         {
             if (typeof(Tin) == typeof(Tout))
                 return (Tout)(Object)src;
+            if (typeof(Tout) == typeof(Object))
+                return (Tout)(Object)src;
 
             DoConvertor<Tin, Tout> convert = GetConvert<Tin, Tout>();
             if (convert != null)
@@ -179,6 +181,7 @@ namespace insp.Utility.Bean
                     return (Tout)method.Invoke(null, new Object[] { src });
                 return (Tout)strToObject(src.ToString(), typeof(Tout), format, context);
             }
+            
             throw new NotImplementedException();
         }
 

@@ -212,6 +212,8 @@ namespace insp.Security.Import
                 showText(code + "...");
                 tsd.CubeCreate(Utility.Collections.Time.TimeUnit.day);
                 tsd.FundTrendCreate(Utility.Collections.Time.TimeUnit.day);
+                tsd.CubeCreate(Utility.Collections.Time.TimeUnit.week);
+                tsd.FundTrendCreate(Utility.Collections.Time.TimeUnit.week);
                 num += 1;
             }
             showText("");

@@ -404,6 +404,8 @@ namespace insp.Utility.Collections.Time
         /// <returns></returns>
         public override K GetValue<K>(String propName)
         {
+            if (propName != null && propName.ToLower() == "time")
+                return ConvertUtils.ConvertTo<K>(this.Date);
             if (typeof(K) == typeof(T))
                 return (K)(Object)Value;
             return ConvertUtils.ConvertTo<T, K>(Value);
