@@ -71,6 +71,8 @@ namespace insp.Security.Data
         /// <param name="serverUrl"></param>
         public IndicatorRepository(String dataPath, String serverUrl="")
         {
+            if (!dataPath.EndsWith("\\"))
+                dataPath += "\\";
             this.dataPath = dataPath;
             this.serverUrl = serverUrl;
         }

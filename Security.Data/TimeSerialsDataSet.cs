@@ -127,12 +127,13 @@ namespace insp.Security.Data
             ds.baseName = code.Exchange + ds.code;
             String dayFilename = ds.baseName + ".csv";
 
-            KLine kline = new KLine(code.Code, TimeUnit.day);
-            kline.Load(dayFilename, false, ",");
+            ds.CreateOrLoad<KLine>("kline", TimeUnit.day);
+            /*KLine kline = new KLine(code.Code, TimeUnit.day);
+            kline.Load(datapath+"kline\\"+dayFilename, false, ",");
             //kline.Load(dayFilename, false, ",", new String[] { "时间", "开盘", "最高", "最低", "收盘", "成交量", "成交额" });
             ConcurrentDictionary<String, Object> datas = new ConcurrentDictionary<string, object>();
             datas["kline"] = kline;
-            ds.timeSerials.Add(TimeUnit.day, datas);
+            ds.timeSerials.Add(TimeUnit.day, datas);*/
 
 
             return ds;

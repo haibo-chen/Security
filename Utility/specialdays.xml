@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <items>
+    <item Date="2017-01-01" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-01-02" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-01-27" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-01-28" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-01-29" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-01-30" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-01-31" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-02-01" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-02-02" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-04-03" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-04-04" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-04-29" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-05-01" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-05-29" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-05-30" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-10-02" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-10-03" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-10-04" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-10-05" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2017-10-06" DayType="Rest" SpecialClass="Festival"></item>
+    <item Date="2018-01-01" DayType="Rest" SpecialClass="Festival"></item>
+  </items>
+</configuration>

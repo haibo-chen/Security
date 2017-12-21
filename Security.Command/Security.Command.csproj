@@ -74,10 +74,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Tools\Utility\Utility.csproj">
-      <Project>{2283784a-04e5-4e13-b147-40ee6d829304}</Project>
-      <Name>Utility</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Security.Data\Security.Data.csproj">
       <Project>{49422822-1a5b-4a3a-9e40-615cc2b17bf8}</Project>
       <Name>Security.Data</Name>
