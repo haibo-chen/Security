@@ -72,5 +72,11 @@
   <ItemGroup>
     <Folder Include="Meta\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utility\Utility.csproj">
+      <Project>{2283784a-04e5-4e13-b147-40ee6d829304}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

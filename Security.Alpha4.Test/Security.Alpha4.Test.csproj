@@ -79,6 +79,10 @@
       <Project>{8bcb6228-bd0a-4bbb-a0c4-d79931340826}</Project>
       <Name>Security.Trade</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Utility\Utility.csproj">
+      <Project>{2283784a-04e5-4e13-b147-40ee6d829304}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="stocks.txt">
