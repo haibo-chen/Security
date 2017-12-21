@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace insp.Security.Strategy.Alpha
 {
     /// <summary>
-    /// 执行阶段
+    /// 执行阶段1
     /// </summary>
     public enum AlphaStage
     {
