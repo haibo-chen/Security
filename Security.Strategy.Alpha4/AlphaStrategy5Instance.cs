@@ -156,8 +156,55 @@ namespace insp.Security.Strategy.Alpha
 
             
             public abstract List<TradeBout> DoBuy(TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam);
-            
+
             public virtual void DoSell(List<TradeBout> bouts, TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
+            {
+                DoSell1(bouts,ds,strategyParam,backtestParam);
+            }
+            /// <summary>
+            /// 根据个股主力线高位卖出
+            /// </summary>
+            /// <param name="bouts"></param>
+            /// <param name="ds"></param>
+            /// <param name="strategyParam"></param>
+            /// <param name="backtestParam"></param>
+            public void DoSell2(List<TradeBout> bouts, TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
+            {
+                if (bouts == null || bouts.Count <= 0)
+                    return;
+                TimeSeries<ITimeSeriesItem<List<double>>> dayFunds = ds.DayFundTrend;
+                KLine dayLine = ds.DayKLine;
+                if (dayLine == null) return;
+
+                foreach (TradeBout bout in bouts)
+                {
+                    DateTime buyDate = bout.BuyInfo.TradeDate;
+                    //找20个工作日的收盘价最高值
+                    KLineItem klineItem = dayLine.GetNearest(buyDate, false);
+                    if (klineItem == null) continue;
+                    int index = dayLine.IndexOf(klineItem);
+                    DateTime sellDate = buyDate;
+                    double sellPrice = 0;
+                    for(int i=index+1;i< Math.Min(index+41,dayLine.Count);i++)
+                    {
+                        if (dayLine[i].CLOSE > sellPrice)
+                        {
+                            sellPrice = dayLine[i].CLOSE;
+                            sellDate = dayLine[i].Date;
+                        }
+                    }
+                    bout.RecordTrade(2, sellDate, TradeDirection.Sell, sellPrice, bout.BuyInfo.Amount, 0, 0, "");
+
+                }
+            }
+            /// <summary>
+            /// 根据个股S点卖出
+            /// </summary>
+            /// <param name="bouts"></param>
+            /// <param name="ds"></param>
+            /// <param name="strategyParam"></param>
+            /// <param name="backtestParam"></param>
+            public void DoSell1(List<TradeBout> bouts, TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
             {
                 TimeSeries<ITimeSeriesItem<char>> dayTradePt = ds.CubePtCreateOrLoad();
                 if (dayTradePt == null)
