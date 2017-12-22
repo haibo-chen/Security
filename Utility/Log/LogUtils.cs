@@ -8,6 +8,9 @@ using log4net;
 
 namespace insp.Utility.Log
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class LogUtils
     {
         public static ILog CreateFileLogger(String name,String path)
