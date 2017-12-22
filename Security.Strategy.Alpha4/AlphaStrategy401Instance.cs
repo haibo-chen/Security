@@ -229,7 +229,7 @@ namespace insp.Security.Strategy.Alpha
             List<String> codes = new List<string>();//交易的股票代码
             List<int> buyCounts = new List<int>();//每天买入的回合数
 
-            p_grail.Init(backtestParam.datapath,backtestParam.resultpath); //初始化大盘指数数据
+            p_grail.Init(null); //初始化大盘指数数据
             char[] drails = new char[3] { 'U', 'U', 'U' }; //三个大盘的买卖点状态，U表示未知
             //遍历每一天
             for (DateTime d = backtestParam.beginDate; d <= backtestParam.endDate; d = d.AddDays(1))
@@ -1105,6 +1105,16 @@ namespace insp.Security.Strategy.Alpha
         /// <param name="context"></param>
         /// <param name="args"></param>
         public override void DoAction(IStrategyContext context, EventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override bool isForbidBuy(DateTime d, string code, out string reason)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override bool isForbidHold(DateTime d, string code, out string reason)
         {
             throw new NotImplementedException();
         }

@@ -29,14 +29,14 @@ namespace insp.Security.Strategy.Alpha
     public class AlphaStrategy5Instance : StrategyInstance
     {
         
-
+        #region 初始化
         /// <summary>
         /// 版本
         /// </summary>
         public override Version Version { get { return new Version(5, 0, 0); } }
 
 
-        #region 初始化
+        
         
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace insp.Security.Strategy.Alpha
 
         #endregion
 
-        #region 回测参数
+        #region 回测
        
         
 
@@ -80,14 +80,69 @@ namespace insp.Security.Strategy.Alpha
                 RemoveUnCompeletedBouts(bouts);
                 if (bouts != null && bouts.Count > 0)
                     allbouts.AddRange(bouts);
-                if(bouts !=null && bouts.Count>0)
-                    log.Info(ds.Code+":回合数="+bouts.Count.ToString()+",胜率="+(bouts.Count(x=>x.Win)*1.0/bouts.Count).ToString()+",累计盈利="+bouts.Sum(x=>x.Profit).ToString("F2"));
+                if(bouts !=null && bouts.Count > 0)
+                {
+                    double totalProfilt = allbouts.Sum(x => x.Profit);
+                    double totalCost = allbouts.Sum(x => x.BuyInfo.TradeCost);
+                    log.Info(ds.Code + ":回合数=" + bouts.Count.ToString() +
+                                       ",胜率=" + (bouts.Count(x => x.Win) * 1.0 / bouts.Count).ToString("F2") + 
+                                       ",盈利=" + bouts.Sum(x => x.Profit).ToString("F2") + 
+                                       ",总胜率=" + (allbouts.Count(x => x.Win) * 1.0 / allbouts.Count).ToString("F2") + 
+                                       ",总盈利率=" + (totalProfilt/ totalCost).ToString("F2") + "(" + totalProfilt.ToString("F2") + "/" + totalCost.ToString("F2") + ")");
+
+                }
+                    
             }
             return allbouts;
         }
         #endregion
 
+        #region 大盘判断
 
+        private GrailParameter p_grail;
+        private void grailInit()
+        {
+            p_grail = GrailParameter.Parse(this.props.Get<String>("grail"));
+            IndicatorRepository repository = (IndicatorRepository)backtestParam.Get<Object>("repository");
+            p_grail.Init(repository);
+        }
+        /// <summary>
+        /// 特定日期禁止买入
+        /// </summary>
+        /// <param name="d"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        protected override bool isForbidBuy(DateTime d, String code, out String reason)
+        {
+            reason = "";
+            if (p_grail == null)
+                grailInit();
+            if (p_grail == null || !p_grail.Enable)
+                return false;
+            return p_grail.CanBuy(d, code);
+        }
+        /// <summary>
+        /// 特定日期禁止持仓
+        /// </summary>
+        /// <param name="d"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        protected override bool isForbidHold(DateTime d, String code, out String reason)
+        {
+            reason = "";
+            if (p_grail == null)
+                grailInit();
+            if (p_grail == null || !p_grail.Enable)
+                return false;
+            if(p_grail.MustSell(d,code))
+            {
+                reason = "大盘发出S或未到买点";
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
         #region 不同的买入模式
 
         internal abstract class Mode
@@ -215,16 +270,17 @@ namespace insp.Security.Strategy.Alpha
                 {
                     ITimeSeriesItem<double> dayCrossItem = dayCross[i];
                     if (dayCrossItem == null) continue;
-                    if (dayCrossItem == null || dayCrossItem.Date < begin || dayCrossItem.Date >= end)
+                    if (dayCrossItem.Date < begin || dayCrossItem.Date >= end)
                         continue;
-                    if (dayCrossItem.Value > p_day_low)
+                    if (dayCrossItem.Value < 0) continue;
+                    if (p_day_low!=0 && dayCrossItem.Value > p_day_low)
                         continue;
 
                     DateTime td = CalendarUtils.GetWeek(dayCrossItem.Date, DayOfWeek.Friday);
                     ITimeSeriesItem<double> weekCrossItem = weedCross[td];
                     if (weekCrossItem == null)
                         continue;
-                    if (weekCrossItem.Value > p_week_low) continue;
+                    if (p_week_low!=0 && weekCrossItem.Value > p_week_low) continue;
 
                     KLine dayLine = ds.DayKLine;
                     if (dayLine == null) continue;

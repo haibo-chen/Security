@@ -187,8 +187,26 @@ namespace insp.Security.Strategy
             return doTestByDate(bouts);
 
         }
-
+        /// <summary>
+        /// 对代码集合进行回测
+        /// </summary>
+        /// <param name="codes"></param>
+        /// <returns></returns>
         protected abstract List<TradeBout> doTestByCodes(List<String> codes);
+        /// <summary>
+        /// 特定日期禁止买入
+        /// </summary>
+        /// <param name="d"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        protected abstract bool isForbidBuy(DateTime d,String code,out String reason);
+        /// <summary>
+        /// 特定日期禁止持仓
+        /// </summary>
+        /// <param name="d"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        protected abstract bool isForbidHold(DateTime d,String code, out String reason);
         /// <summary>
         /// 执行回测
         /// </summary>
@@ -210,7 +228,7 @@ namespace insp.Security.Strategy
             List<int> buyCounts = new List<int>();//每天买入的回合数
 
             IndicatorRepository repository = (IndicatorRepository)backtestParam.Get<Object>("repository");
-
+            String reason = "";
             //遍历每一天
             for (DateTime d = backtestParam.beginDate; d <= backtestParam.endDate; d = d.AddDays(1))
             {
@@ -246,6 +264,11 @@ namespace insp.Security.Strategy
                         bouts.Remove(record.buyBouts[i]);
                         record.buyBouts.RemoveAt(i--);
                     }
+                    else if(isForbidBuy(d, record.buyBouts[i].Code,out reason))//如果策略实现禁止买入
+                    {
+                        bouts.Remove(record.buyBouts[i]);
+                        record.buyBouts.RemoveAt(i--);
+                    }
                     else
                     {
                         curFund -= record.buyBouts[i].BuyInfo.TradeCost; //买入
@@ -257,8 +280,17 @@ namespace insp.Security.Strategy
                     stat.MaxTradeCountPerDay = record.buyBouts.Count;
                 buyCounts.Add(record.buyBouts.Count);
 
+                //判断持仓中的股票是否被禁止持仓
+                for (int i=0;i< holdTrades.Count;i++)
+                {
+                    TradeBout info = holdTrades[i];
+                    if (!isForbidHold(d, info.Code, out reason))
+                        continue;
+                    info.SellInfo.Reason = reason + "(" + info.SellInfo.Reason + ")";
+                    record.sellBouts.Add(info);
+                    holdTrades.RemoveAt(i--);
+                }
 
-                
 
                 //卖出收入放回资金
                 for (int i = 0; i < record.sellBouts.Count; i++)
