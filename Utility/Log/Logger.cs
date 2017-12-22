@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace insp.Utility.Log
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class Logger
     {
 
