@@ -85,10 +85,10 @@ namespace insp.Security.Strategy.Alpha
                     double totalProfilt = allbouts.Sum(x => x.Profit);
                     double totalCost = allbouts.Sum(x => x.BuyInfo.TradeCost);
                     log.Info(ds.Code + ":回合数=" + bouts.Count.ToString() +
-                                       ",胜率=" + (bouts.Count(x => x.Win) * 1.0 / bouts.Count).ToString("F2") + 
-                                       ",盈利=" + bouts.Sum(x => x.Profit).ToString("F2") + 
-                                       ",总胜率=" + (allbouts.Count(x => x.Win) * 1.0 / allbouts.Count).ToString("F2") + 
-                                       ",总盈利率=" + (totalProfilt/ totalCost).ToString("F2") + "(" + totalProfilt.ToString("F2") + "/" + totalCost.ToString("F2") + ")");
+                                       ",胜率=" + (bouts.Count(x => x.Win) * 1.0 / bouts.Count).ToString("F2") +
+                                       ",盈利=" + bouts.Sum(x => x.Profit).ToString("F2") +
+                                       ",总胜率=" + (allbouts.Count(x => x.Win) * 1.0 / allbouts.Count).ToString("F2") +
+                                       ",总盈利=" + totalProfilt.ToString("F2"));
 
                 }
                     
@@ -325,8 +325,13 @@ namespace insp.Security.Strategy.Alpha
 
                     DateTime td = CalendarUtils.GetWeek(dayCrossItem.Date, DayOfWeek.Friday);
                     ITimeSeriesItem<double> weekCrossItem = weedCross[td];
-                    if (weekCrossItem == null)
-                        continue;
+                    if (weekCrossItem == null)//本周没有出现金叉，则判断上周是否出现
+                    {
+                        td = td.AddDays(-7);
+                        weekCrossItem = weedCross[td];
+                        if (weekCrossItem == null)
+                            continue;
+                    }
                     if (p_week_low!=0 && weekCrossItem.Value > p_week_low) continue;
 
                     KLine dayLine = ds.DayKLine;
