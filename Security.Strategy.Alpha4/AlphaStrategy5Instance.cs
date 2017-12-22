@@ -73,11 +73,15 @@ namespace insp.Security.Strategy.Alpha
             {
                 //生成交易数据
                 TimeSerialsDataSet ds = repository[code];
+                if (ds == null) continue;
+
                 List<TradeBout> bouts = mode.DoBuy(ds, props, backtestParam);
                 mode.DoSell(bouts, ds, props, backtestParam);
                 RemoveUnCompeletedBouts(bouts);
                 if (bouts != null && bouts.Count > 0)
                     allbouts.AddRange(bouts);
+                if(bouts !=null && bouts.Count>0)
+                    log.Info(ds.Code+":回合数="+bouts.Count.ToString()+",胜率="+(bouts.Count(x=>x.Win)*1.0/bouts.Count).ToString()+",累计盈利="+bouts.Sum(x=>x.Profit).ToString("F2"));
             }
             return allbouts;
         }
@@ -151,21 +155,24 @@ namespace insp.Security.Strategy.Alpha
                 double p_day_bias = strategyParam.Get<double>("day_bias");
                 double p_week_low = strategyParam.Get<double>("week_low");
                 double p_week_bias = strategyParam.Get<double>("week_bias");
-                GetInMode p_getinMode = (GetInMode)strategyParam.Get<Object>("fundpergetin");
+                GetInMode p_getinMode = (GetInMode)strategyParam.Get<GetInMode>("fundpergetin");
                 for (int i = 0; i < dayCross.Count; i++)
                 {
                     ITimeSeriesItem<double> dayCrossItem = dayCross[i];
                     if (dayCrossItem == null) continue;                    
-                    if (dayCrossItem == null || dayCrossItem.Date < begin || dayCrossItem.Date >= end)
+                    if (dayCrossItem.Date < begin || dayCrossItem.Date >= end)
                         continue;
-                    if (dayCrossItem.Value > p_day_low)//日主力线金叉点不在低位
+                    if (dayCrossItem.Value <= 0)
+                        continue;
+                    ITimeSeriesItem<List<double>> dayFundItem = dayFunds[dayCrossItem.Date];
+                    if (p_day_low != 0 && dayFundItem.Value[0] > p_day_low)//日主力线金叉点不在低位
                         continue;
 
                     DateTime td = CalendarUtils.GetWeek(dayCrossItem.Date, DayOfWeek.Friday);
                     ITimeSeriesItem<List<double>> weekFundItem = weekFunds[td];
                     if (weekFundItem == null)
                         continue;
-                    if ((weekFundItem.Value[0] - weekFundItem.Value[1]) < p_week_bias) continue;
+                    if (p_week_bias != 0 && ((weekFundItem.Value[0] - weekFundItem.Value[1]) < p_week_bias)) continue;
 
                     KLine dayLine = ds.DayKLine;
                     if (dayLine == null) continue;

@@ -68,6 +68,20 @@ namespace insp.Security.Strategy
 
 
         #region 初始化
+        static StrategyInstance()
+        {
+            //注册转换器
+            ConvertUtils.RegisteConvertor<String, TradeInfo>(ConvertUtils.strToObject<TradeInfo>);
+            ConvertUtils.RegisteConvertor<TradeInfo, String>(ConvertUtils.objectToStr);
+            ConvertUtils.RegisteConvertor<String, TradeDirection>(ConvertUtils.strtoenum<TradeDirection>);
+            ConvertUtils.RegisteConvertor<TradeDirection, String>(ConvertUtils.enumtostr<TradeDirection>);
+            ConvertUtils.RegisteConvertor<String, TradeIntent>(ConvertUtils.strtoenum<TradeIntent>);
+            ConvertUtils.RegisteConvertor<TradeIntent, String>(ConvertUtils.enumtostr<TradeIntent>);
+            ConvertUtils.RegisteConvertor<String, GetInMode>((x,format,props) => GetInMode.Parse(x));            
+        }
+            
+
+
         /// <summary>
         /// 初始化
         /// </summary>
@@ -165,7 +179,7 @@ namespace insp.Security.Strategy
             log.Info("准备回测：回测编号=" + backtestParam.serialno + ",初始资金=" + backtestParam.initfunds.ToString("F2") + ",日期=" + backtestParam.beginDate.ToString("yyyyMMdd") + "-" + backtestParam.endDate.ToString("yyyyMMdd"));
 
             List<String> codes = new List<string>();
-            System.IO.File.ReadAllLines(FileUtils.GetDirectory() + "test.csv")
+            System.IO.File.ReadAllLines(FileUtils.GetDirectory() + backtestParam.codefilename)
                 .ToList().ForEach(x => codes.Add(x.Split(',')[1]));
             log.Info("加载代码" + codes.Count.ToString());
 
@@ -195,7 +209,7 @@ namespace insp.Security.Strategy
             List<String> codes = new List<string>();//交易的股票代码
             List<int> buyCounts = new List<int>();//每天买入的回合数
 
-            IndicatorRepository repository = (IndicatorRepository)props.Get<Object>("repository");
+            IndicatorRepository repository = (IndicatorRepository)backtestParam.Get<Object>("repository");
 
             //遍历每一天
             for (DateTime d = backtestParam.beginDate; d <= backtestParam.endDate; d = d.AddDays(1))
@@ -346,10 +360,10 @@ namespace insp.Security.Strategy
             //结果统计
             stat.Records = records;
 
-            stat.AverageTradeCountPerDay = buyCounts.Average();
-            stat.AvgHoldDays = (int)holdDays.Average();
+            stat.AverageTradeCountPerDay = buyCounts.Count<=0?0:buyCounts.Average();
+            stat.AvgHoldDays = holdDays.Count<=0?0:(int)holdDays.Average();
             stat.Count = codes.Count;
-            stat.MaxHoldDays = holdDays.Max();
+            stat.MaxHoldDays = holdDays.Count <= 0 ? 0 : holdDays.Max();
             stat.TotalFund = curFund;
             stat.TotalProfilt = (curFund - backtestParam.InitFund) / backtestParam.InitFund;
             stat.WinRate = stat.WinNum * 1.0 / stat.BoutNum;

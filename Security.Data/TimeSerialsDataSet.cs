@@ -336,7 +336,7 @@ namespace insp.Security.Data
             result = (T)meta.Geneartor(props);
             if (result != null)
             {
-                this.Put((TimeSeries<ITimeSeriesItem>)(Object)result, name);
+                this.Put((ITimeSeries)result, name);
             }
             return result;
         }
