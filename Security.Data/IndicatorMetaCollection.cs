@@ -9,6 +9,7 @@ using insp.Utility.Collections;
 using insp.Utility.Collections.Time;
 
 using insp.Security.Data.kline;
+using insp.Security.Data.Indicator.Macd;
 
 namespace insp.Security.Data
 {
@@ -30,6 +31,8 @@ namespace insp.Security.Data
         public const String NAME_FUND_TREND = "fund_trend";
         /// <summary>资金金叉</summary>  
         public const String NAME_FUND_CROSS = "fund_cross";
+        /// <summary>MACD</summary>  
+        public const String NAME_MACD = "macd";
 
         /// <summary>K线元信息</summary>         
         public static readonly IndicatorMeta META_KLINE = KLine.Meta;
@@ -43,6 +46,8 @@ namespace insp.Security.Data
         public static readonly IndicatorMeta META_FUND_TREND = new IndicatorMeta(NAME_FUND_TREND, "fundtrend", typeof(TimeSeries<ITimeSeriesItem<List<double>>>), IndicatorClass.TimeSeries, null);
         /// <summary>资金金叉元信息</summary>
         public static readonly IndicatorMeta META_FUND_CROSS = new IndicatorMeta(NAME_FUND_CROSS, "fundcross", typeof(TimeSeries<ITimeSeriesItem<double>>), IndicatorClass.TimeSeries, null);
+        /// <summary>MACD</summary>
+        public static readonly IndicatorMeta META_MACD = new IndicatorMeta(NAME_MACD, "macd", typeof(MACD), IndicatorClass.TimeSeries, null);
 
         #endregion
 
@@ -78,7 +83,7 @@ namespace insp.Security.Data
         /// </summary>
         private void createDefault()
         {
-            elements.AddRange(new IndicatorMeta[] { META_KLINE, META_CUBEBUY, META_CUBESELL, META_CUBEPT, META_FUND_TREND, META_FUND_CROSS });
+            elements.AddRange(new IndicatorMeta[] { META_KLINE, META_CUBEBUY, META_CUBESELL, META_CUBEPT, META_FUND_TREND, META_FUND_CROSS,META_MACD });
 
         }
         /// <summary>

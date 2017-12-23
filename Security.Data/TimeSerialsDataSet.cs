@@ -15,6 +15,7 @@ using insp.Security.Data.kline;
 using insp.Security.Data.Indicator;
 using insp.Utility.Bean;
 using insp.Utility.Date;
+using insp.Security.Data.Indicator.Macd;
 
 namespace insp.Security.Data
 {
@@ -111,6 +112,18 @@ namespace insp.Security.Data
                 String code = (String)props["code"];
 
                 return tsd.FundTrendCrossCreate(tu);
+            };
+            IndicatorMetaCollection.META_MACD.Geneartor = props =>
+            {
+                TimeSerialsDataSet tsd = (TimeSerialsDataSet)props["TimeSerialsDataSet"];
+                TimeUnit tu = (TimeUnit)props["timeunit"];
+                String dataname = (String)props["name"];
+                String code = (String)props["code"];
+
+                KLine kline = tsd.KLineCreateOrLoad(tu);
+                if (kline == null) return null;
+
+                return MACD.Create(kline);
             };
         }
 

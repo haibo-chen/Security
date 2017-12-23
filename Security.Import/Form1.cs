@@ -273,6 +273,42 @@ namespace insp.Security.Import
             MessageBox.Show("生成完成,共有" + num.ToString() + "个股票生成数据");
 
         }
+        /// <summary>
+        /// 生成MACD
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button10_Click(object sender, EventArgs e)
+        {
+            if (repository == null)
+            {
+                repository = new IndicatorRepository(textBox2.Text);
+                repository.Initilization();
+            }
+            SecurityPropertiesSet securities = repository.Securities;
+            List<String> codes = securities.Codes;
+            int num = 0;
+            foreach (String code in codes)
+            {
+                if (code == null || code == "") continue;
+                TimeSerialsDataSet tsd = repository[code];
+                if (tsd == null) continue;
+                KLine dayLine = tsd.DayKLine;
+                if(dayLine != null)
+                {
+                    tsd.Create("macd", TimeUnit.day, checkBox1.Checked);
+                }
+                KLine weekLine = tsd.WeekKLine;
+                if(weekLine != null)
+                {
+                    tsd.Create("macd", TimeUnit.week, checkBox1.Checked);
+                }
+                if (tsd == null || tsd.DayKLine == null || tsd.DayKLine.Count <= 0)
+                    continue;
+                showText(code + "...");
+                
+            }
+        }
         #endregion
 
         public void showText(String text)

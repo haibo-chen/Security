@@ -29,7 +29,8 @@ namespace Security.Alpha4.Test
         static void Main(string[] args)
         {
             StrategyFactory factory = new StrategyFactory();
-            factory.Put(new AlphaStrategy6());
+            factory.Put(new AlphaStrategy5())
+                   .Put(new AlphaStrategy6());
 
             
 

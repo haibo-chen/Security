@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace insp.Security.Strategy.Alpha
 {
-    public class AlphaStrategy6Instance : StrategyInstance
+    public class AlphaStrategy601Instance : StrategyInstance
     {
         #region 初始化
         /// <summary>
@@ -22,12 +22,12 @@ namespace insp.Security.Strategy.Alpha
         /// <summary>
         /// 构造方法
         /// </summary>
-        internal AlphaStrategy6Instance(Properties props) { id = "1"; this.props = props; }
+        internal AlphaStrategy601Instance(Properties props) { id = "1"; this.props = props; }
         /// <summary>
         /// 构造方法
         /// </summary>
         /// <param name="id"></param>
-        internal AlphaStrategy6Instance(String id, Properties props) { this.id = id; this.props = props; }
+        internal AlphaStrategy601Instance(String id, Properties props) { this.id = id; this.props = props; }
 
         #endregion
 
@@ -191,9 +191,9 @@ namespace insp.Security.Strategy.Alpha
                         //如果是择机卖出状态
                         if (state == 1)
                         {
-                            if (sellnum > sell_selectnum || kline[dayKLineIndex].HIGH > bout.BuyInfo.TradePrice)
+                            if (sellnum > sell_selectnum || earnRate > 0)
                             {
-                                bout.RecordTrade(2, d, TradeDirection.Sell, bout.BuyInfo.TradePrice, bout.BuyInfo.Amount, backtestParam.volumecommission, backtestParam.stampduty, stateReason + ",延迟天数=" + sellnum.ToString());
+                                bout.RecordTrade(2, d, TradeDirection.Sell, kline[dayKLineIndex].CLOSE, bout.BuyInfo.Amount, backtestParam.volumecommission, backtestParam.stampduty, stateReason + ",延迟天数=" + sellnum.ToString());
                                 break;
                             }
                             sellnum += 1;

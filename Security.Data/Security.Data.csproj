@@ -47,6 +47,8 @@
     <Compile Include="IIndicator.cs" />
     <Compile Include="IIndicatorContext.cs" />
     <Compile Include="IndicatorMetaCollection.cs" />
+    <Compile Include="Indicator\Macd\MACD.cs" />
+    <Compile Include="Indicator\Macd\MACDItem.cs" />
     <Compile Include="TimeSerialsDataSet.cs" />
     <Compile Include="IndicatorMeta.cs" />
     <Compile Include="Indicator\Fund\MainForce.cs" />

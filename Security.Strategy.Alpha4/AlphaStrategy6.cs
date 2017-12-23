@@ -78,7 +78,7 @@ namespace insp.Security.Strategy.Alpha
         /// <returns></returns>
         public IStrategyInstance CreateInstance(String id, Properties props, String version = "")
         {
-            return new AlphaStrategy6Instance(id, props) { Meta = this };
+            return new AlphaStrategy601Instance(id, props) { Meta = this };
         }
 
         #endregion

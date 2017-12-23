@@ -456,7 +456,7 @@ namespace insp.Utility.Collections.Time
         /// <param name="begin"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        public TimeSeries<ITimeSeriesItem<K>> Select<K>(string propName, int begin, int end) 
+        public TimeSeries<ITimeSeriesItem<K>> Select<K>(string propName, int begin=0, int end=0) 
         {
             if (begin < 0) begin = 0;
             if (end <= 0 || end >= this.Count) end = this.Count - 1;
