@@ -270,11 +270,20 @@ namespace insp.Security.Strategy.Alpha
                         {
                             if(fundT <= sell_slopepoint)
                             {
-                                if(earnRate>0)
+                                KLineItem prevKlineItem = kline[dayKLineIndex - 1];
+                                if(prevKlineItem.CLOSE > dayLineItem.CLOSE)//价格下降了
+                                {
+                                    if (earnRate > 0)
+                                    {
+                                        bout.RecordTrade(2, d, TradeDirection.Sell, dayLineItem.CLOSE, bout.BuyInfo.Amount, backtestParam.volumecommission, backtestParam.stampduty, "斜率一致且增幅小于阈值(" + fundT.ToString("F2") + "<" + sell_slopepoint.ToString("F2"));
+                                        break;
+                                    }
+                                }
+                                /*if(earnRate>0)
                                 {
                                     bout.RecordTrade(2, d, TradeDirection.Sell, dayLineItem.CLOSE, bout.BuyInfo.Amount, backtestParam.volumecommission, backtestParam.stampduty, "斜率一致且增幅小于阈值("+ fundT.ToString("F2")+"<"+ sell_slopepoint.ToString("F2"));
                                     break;
-                                }
+                                }*/
                             }
                         }
                         //进入下一天
@@ -298,8 +307,9 @@ namespace insp.Security.Strategy.Alpha
                     log.Info(ds.Code + ":回合数=" + bouts.Count.ToString() +
                                        ",胜率=" + (bouts.Count(x => x.Win) * 1.0 / bouts.Count).ToString("F2") +
                                        ",盈利=" + bouts.Sum(x => x.Profit).ToString("F2") +
-                                       ",总胜率=" + (allbouts.Count(x => x.Win) * 1.0 / allbouts.Count).ToString("F2") +
-                                       ",总盈利=" + totalProfilt.ToString("F2"));
+                                       ",总胜率=" + (allbouts.Count(x => x.Win) * 1.0 / allbouts.Count).ToString("F3") +
+                                       ",总盈利=" + totalProfilt.ToString("F2") +
+                                       ",平均盈利率=" + (totalProfilt / totalCost).ToString("F3"));
 
                     /*foreach(TradeBout bout in bouts)
                     {

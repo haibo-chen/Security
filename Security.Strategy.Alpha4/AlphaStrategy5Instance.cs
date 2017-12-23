@@ -85,10 +85,11 @@ namespace insp.Security.Strategy.Alpha
                     double totalProfilt = allbouts.Sum(x => x.Profit);
                     double totalCost = allbouts.Sum(x => x.BuyInfo.TradeCost);
                     log.Info(ds.Code + ":回合数=" + bouts.Count.ToString() +
-                                       ",胜率=" + (bouts.Count(x => x.Win) * 1.0 / bouts.Count).ToString("F2") +
+                                       ",胜率=" + (bouts.Count(x => x.Win) * 1.0 / bouts.Count).ToString("F3") +
                                        ",盈利=" + bouts.Sum(x => x.Profit).ToString("F2") +
-                                       ",总胜率=" + (allbouts.Count(x => x.Win) * 1.0 / allbouts.Count).ToString("F2") +
-                                       ",总盈利=" + totalProfilt.ToString("F2"));
+                                       ",总胜率=" + (allbouts.Count(x => x.Win) * 1.0 / allbouts.Count).ToString("F3") +
+                                       ",总盈利=" + totalProfilt.ToString("F2") +
+                                       ",平均盈利率=" + (totalProfilt/ totalCost).ToString("F3"));
 
                 }
                     
