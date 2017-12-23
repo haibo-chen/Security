@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Strategy.Alpha", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Alpha4.Backtest", "Security.Alpha4.Backtest\Security.Alpha4.Backtest.csproj", "{C8853E80-CA77-4366-8100-722622BC6AC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Alpha4.Test", "Security.Alpha4.Test\Security.Alpha4.Test.csproj", "{4C2381CB-EC15-40F4-8253-5C30AE3C463E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Alpha.Test", "Security.Alpha4.Test\Security.Alpha.Test.csproj", "{4C2381CB-EC15-40F4-8253-5C30AE3C463E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Alpha.Application", "Security.Alpha.Application\Security.Alpha.Application.csproj", "{59FED89D-33FD-4203-BDCD-98EEBBB1BAD2}"
 EndProject

@@ -385,5 +385,75 @@ namespace insp.Utility.Collections
             }
             return b1 / b2;
         }
+        /// <summary>
+        /// c乘法
+        /// </summary>
+        /// <param name="list1"></param>
+        /// <param name="list2"></param>
+        /// <returns></returns>
+        public static List<double> MUL(this List<double> list1, List<double> list2)
+        {
+            int count = System.Math.Min(list1.Count,list2.Count);
+            List<double> r = new List<double>();
+            for(int i=0;i<count;i++)
+            {
+                r.Add(list1[i]*list2[i]);
+            }
+            return r;
+        }
+        /// <summary>
+        /// 协方差
+        /// </summary>
+        /// <param name="list1"></param>
+        /// <param name="list2"></param>
+        /// <returns></returns>
+        public static double COV(this List<double> list1, List<double> list2)
+        {
+            return MUL(list1, list2).Average() - list1.Average() * list2.Average();
+        }
+        /// <summary>
+        /// 相关系数
+        /// </summary>
+        /// <param name="list1"></param>
+        /// <param name="list2"></param>
+        /// <returns></returns>
+        public static double Coefficient(this List<double> list1, List<double> list2)
+        {
+            return COV(list1, list2) / (SD(list1)*SD(list2));
+        }
+        /// <summary>
+        /// 方差公式
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static double Variance(this List<double> list)
+        {
+            if (list == null || list.Count <= 0)
+                return 0;
+            double avg = list.Average();
+            return list.Sum(x => (x - avg) * (x - avg)) / list.Count;
+        }
+        /// <summary>
+        /// 标准差公式
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static double SD(this List<double> list)
+        {
+            return System.Math.Sqrt(Variance(list));
+
+        }
+        public static List<double> Normalization(this List<double> list)
+        {
+            if (list == null || list.Count <= 0)
+                return list;
+
+            List<double> r = new List<double>();
+            double avg = list.Average();
+            double sd = SD(list);
+            list.ForEach(x => r.Add((x-avg)/sd));
+
+            return r;
+        }
     }
 }

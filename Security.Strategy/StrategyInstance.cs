@@ -184,8 +184,51 @@ namespace insp.Security.Strategy
             log.Info("加载代码" + codes.Count.ToString());
 
             List<TradeBout> bouts = doTestByCodes(codes);
-            return doTestByDate(bouts);
+            TotalStat totalStat = doTestByDate(bouts);
 
+            if (totalStat != null)
+            {
+                totalStat.Summary(log);
+                recordBacktest(totalStat);
+            }           
+            return totalStat;
+
+        }
+
+   
+        /// <summary>
+        /// 写回测结果
+        /// </summary>
+        private void recordBacktest(TotalStat stat)
+        {
+            #region 写入回测统计结果
+            StringBuilder str = new StringBuilder();
+            ////批号
+            str.Append(backtestParam.serialno + ",");
+            ////策略参数
+            List<String> paramNames = Meta.GetParameterNames();
+            for (int i = 0; i < paramNames.Count; i++)
+            {
+                str.Append(this.GetParameterValue<String>(paramNames[i]) + ",");
+            }
+            ////回测结果 
+            str.Append(stat.Count.ToString() + ",");
+            str.Append(stat.BoutNum.ToString() + ",");
+            str.Append(stat.WinRate.ToString("F2") + ",");
+            str.Append(stat.TotalProfilt.ToString("F2") + ",");
+            str.Append(stat.TotalFund.ToString("F2") + ",");
+            str.Append(stat.HoldDays + ",");
+            str.Append(stat.InitRetracement + ",");
+            str.Append(stat.TradeCountPerDay);
+            str.Append(System.Environment.NewLine);
+
+            //写文件
+            System.IO.File.WriteAllText(backtestParam.ResultFileName, str.ToString());
+            #endregion
+
+            #region 写回测日期记录
+            stat.WriteRecord(backtestParam.DateRecordFileName, backtestParam.DateDetailFileName);
+            #endregion
         }
         /// <summary>
         /// 对代码集合进行回测

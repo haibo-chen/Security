@@ -1,5 +1,6 @@
 ﻿using insp.Utility.Bean;
 using insp.Utility.Collections;
+using insp.Utility.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,7 @@ namespace insp.Security.Strategy
         /// <summary>
         /// 结果路径
         /// </summary>
-        public String Resultpath { get { return testParamters.Get<String>("resultpath"); } }
+        public String Resultpath { get { return FileUtils.GetDirectory(testParamters.Get<String>("resultpath")); } }
         /// <summary>
         /// 代码文件
         /// </summary>
@@ -184,11 +185,11 @@ namespace insp.Security.Strategy
             {
                 int backtestxh = batchno + i + 1;//回测序号
                                                  //结果文件已经有了，跳过
-                String resultfilename = resultPath + backtestxh + ".result";
+                /*String resultfilename = resultPath + backtestxh + ".result";
                 if (System.IO.File.Exists(resultfilename))
                     continue;
-
-
+                */
+                
                 Properties instanceProp = instancePropSet[i];
                 Properties backtestProp = testParamters.Clone();
                 backtestProp["serialno"] = backtestxh.ToString();
@@ -197,19 +198,19 @@ namespace insp.Security.Strategy
                 execParams.Add(new ExecuteParam(backtestxh.ToString(), instanceProp, backtestProp));
                 if (execParams.Count >= instanceCountPerTask)
                 {
-                    Executor executor = new Executor(testParamters,meta,"",execParams);
+                    Executor executor = new Executor(meta,"",execParams);
                     executors.Add(executor);
                     execParams.Clear();
                 }
             }
             if (execParams.Count > 0)
-            {
-                Executor executor = new Executor(testParamters, meta, "", execParams);
+            {                
+                Executor executor = new Executor(meta, "", execParams);
                 executors.Add(executor);
                 execParams.Clear();
             }
 
- 
+            
             System.IO.File.WriteAllText(resultPath + batchno + ".result", meta.GetBatchResultTitle()+System.Environment.NewLine);
 
             logger.Info("准备执行任务．．．，(任务数=" + executors.Count.ToString() + ")");

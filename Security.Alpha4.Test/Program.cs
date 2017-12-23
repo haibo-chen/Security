@@ -29,11 +29,11 @@ namespace Security.Alpha4.Test
         static void Main(string[] args)
         {
             StrategyFactory factory = new StrategyFactory();
-            factory.Put(new AlphaStrategy5());
+            factory.Put(new AlphaStrategy6());
 
             
 
-            Properties prop = Properties.Load(FileUtils.GetDirectory() + "test.properties", Encoding.UTF8);
+            Properties prop = Properties.Load(FileUtils.GetDirectory() + "alpha6.properties", Encoding.UTF8);
 
             IndicatorRepository repository = new IndicatorRepository(prop.Get<String>("backtest.datapath"));
             repository.Initilization();

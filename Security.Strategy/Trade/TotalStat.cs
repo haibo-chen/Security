@@ -218,11 +218,12 @@ namespace insp.Security.Strategy
         #endregion
 
         #region 写文件
+        
         /// <summary>
         /// 写详细记录
         /// </summary>
-        /// <param name="recordFileName"></param>
-        /// <param name="boutFileName"></param>
+        /// <param name="recordFileName">每天的交易摘要文件</param>
+        /// <param name="boutFileName">每天的交易明细文件</param>
         public void WriteRecord(String recordFileName,String boutFileName)
         {
             List<String> recordLines = new List<string>();

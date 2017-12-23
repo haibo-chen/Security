@@ -312,7 +312,7 @@ namespace insp.Security.Strategy.Alpha
                 double p_day_bias = strategyParam.Get<double>("day_bias");
                 double p_week_low = strategyParam.Get<double>("week_low");
                 double p_week_bias = strategyParam.Get<double>("week_bias");
-                GetInMode p_getinMode = (GetInMode)strategyParam.Get<Object>("fundpergetin");
+                GetInMode p_getinMode = GetInMode.Parse(strategyParam.Get<String>("fundpergetin"));
                 for (int i = 0; i < dayCross.Count; i++)
                 {
                     ITimeSeriesItem<double> dayCrossItem = dayCross[i];
@@ -324,15 +324,11 @@ namespace insp.Security.Strategy.Alpha
                         continue;
 
                     DateTime td = CalendarUtils.GetWeek(dayCrossItem.Date, DayOfWeek.Friday);
-                    ITimeSeriesItem<double> weekCrossItem = weedCross[td];
-                    if (weekCrossItem == null)//本周没有出现金叉，则判断上周是否出现
-                    {
-                        td = td.AddDays(-7);
-                        weekCrossItem = weedCross[td];
-                        if (weekCrossItem == null)
-                            continue;
-                    }
-                    if (p_week_low!=0 && weekCrossItem.Value > p_week_low) continue;
+                    ITimeSeriesItem<double> weekCrossItem1 = weedCross[td];
+                    ITimeSeriesItem<double> weekCrossItem2 = weedCross[td.AddDays(-7)];
+                    if (weekCrossItem1 == null && weekCrossItem2 == null)
+                        continue;
+                    if (p_week_low!=0 && (weekCrossItem1 != null && weekCrossItem1.Value > p_week_low && weekCrossItem2 != null && weekCrossItem2.Value > p_week_low)) continue;
 
                     KLine dayLine = ds.DayKLine;
                     if (dayLine == null) continue;

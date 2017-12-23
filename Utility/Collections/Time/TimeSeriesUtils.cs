@@ -24,7 +24,7 @@ namespace insp.Utility.Collections.Time
         /// <param name="ts"></param>
         /// <param name="num"></param>
         /// <returns></returns>
-        public static TimeSeries<ITimeSeriesItem<double>> SLOPE(this TimeSeries<ITimeSeriesItem<double>> ts, int num)
+        public static TimeSeries<ITimeSeriesItem<double>> SLOPE(this ITimeSeries<ITimeSeriesItem<double>> ts, int num)
         {
             TimeSeries<ITimeSeriesItem<double>> results = new TimeSeries<ITimeSeriesItem<double>>();
 
@@ -44,7 +44,9 @@ namespace insp.Utility.Collections.Time
             return results;
             
         }
+
         
+
     }
     public static class TimeSeriesHHVUtils
     {

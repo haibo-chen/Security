@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4C2381CB-EC15-40F4-8253-5C30AE3C463E}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Security.Alpha4.Test</RootNamespace>
-    <AssemblyName>Security.Alpha4.Test</AssemblyName>
+    <RootNamespace>Security.Alpha.Test</RootNamespace>
+    <AssemblyName>Security.Alpha.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -52,6 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="goodStocks.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="alpha6.properties">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="test.csv">

@@ -372,6 +372,8 @@ namespace insp.Utility.Bean
         }
         private static double strTodouble(String x,String format="", Properties prop = null)
         {
+            if (x != null && x.ToLower() == "nan")
+                return double.NaN;
             return (double)Convert.ChangeType(x, typeof(double));
         }
         #endregion

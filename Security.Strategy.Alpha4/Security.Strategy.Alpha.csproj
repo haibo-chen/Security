@@ -48,6 +48,8 @@
     <Compile Include="AlphaStrategy401Instance.cs" />
     <Compile Include="AlphaStrategy5.cs" />
     <Compile Include="AlphaStrategy5Instance.cs" />
+    <Compile Include="AlphaStrategy6.cs" />
+    <Compile Include="AlphaStrategy6Instance.cs" />
     <Compile Include="GrailParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StrategyDataSet.cs" />

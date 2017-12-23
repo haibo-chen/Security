@@ -16,26 +16,25 @@ namespace insp.Security.Strategy
     {
         public readonly String backtestxh;
         public readonly Properties instanceParam;
-       
+        public readonly Properties backtestProp;
         public ExecuteParam(String backtestxh, Properties instanceParam, Properties backtestProp)
         {
             this.backtestxh = backtestxh;
             this.instanceParam = instanceParam;
+            this.backtestProp = backtestProp;
         }        
     }
     public class Executor
     {
 
         public readonly static Object batchResultFileLocker = new object();
-        private readonly Properties backtestParams;
         private readonly IStrategyMeta meta;
         private readonly String instanceVersion;
         private List<ExecuteParam> param;
 
 
-        public Executor(Properties backtestParams,IStrategyMeta meta,String instanceVersion,List<ExecuteParam> param)
-        {
-            this.backtestParams = backtestParams;
+        public Executor(IStrategyMeta meta,String instanceVersion,List<ExecuteParam> param)
+        {            
             this.meta = meta;
             this.instanceVersion = instanceVersion;
             this.param = new List<ExecuteParam>(param);
@@ -55,10 +54,11 @@ namespace insp.Security.Strategy
                     IStrategyInstance instance = meta.CreateInstance(param[i].backtestxh, param[i].instanceParam, instanceVersion);
                     logger.Info("启动回测：...");
                     instance.Initilization();
-                    instance.DoTest(StrategyContext.Default, backtestParams);
+                    instance.DoTest(StrategyContext.Default, param[i].backtestProp);
 
-                    String batchno = backtestParams.Get<String>("batchno");
-                    String resultPath = backtestParams.Get<String>("resultpath");
+                    String batchno = param[i].backtestProp.Get<String>("batchno");
+                    String resultPath = param[i].backtestProp.Get<String>("resultpath");
+                    resultPath = FileUtils.GetDirectory(resultPath);
                     String resultFile = resultPath + param[i].backtestxh + ".result";
                     String batchresultfile = resultPath + batchno + ".result";
                     if (System.IO.File.Exists(resultFile))
