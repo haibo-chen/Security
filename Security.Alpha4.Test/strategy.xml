@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+   <buyers>
+     <buyer Name="DoBuyerFundMainforce" Caption="资金主力低位买入" Assembly="Security.Strategy.Alpha.dll" ClassName="insp.Security.Strategy.Alpha.Sell.DoBuyerFundMainforce">
+       <properties>
+         <property Name="mainforcelow" Caption="主力线低位" TypeName="double" Default="22"></property>
+         <property Name="mainforcerough" Caption="低位模糊天数" TypeName="int" Default="0"></property>
+         <property Name="buypointdays" Caption="距离买点天数" TypeName="int" Default="0"></property>
+         <property Name="maxbuynum" Caption="最大回合数" TypeName="int" Default="1"></property>
+         <property Name="getinMode" Caption="交易方式" TypeName="insp.Security.Strategy.GetInMode" Default="3;50000"></property>
+         <property Name="grail" Caption="大盘监控" TypeName="String" Default="1;1A0001;399006;399002"></property>
+       </properties>
+     </buyer>
+    <buyer Name="DoBuyerFundLine" Caption="资金主力低位或金叉买入" Assembly="Security.Strategy.Alpha.dll" ClassName="insp.Security.Strategy.Alpha.Sell.DoBuyerFundLine">
+      <properties>
+        <property Name="buy_mainlow" Caption="主力线低位" TypeName="double" Default="22"></property>
+        <property Name="buy_cross" Caption="主力线金叉" TypeName="int" Default="0"></property>
+        <property Name="getinMode" Caption="交易方式" TypeName="insp.Security.Strategy.GetInMode" Default="3;50000"></property>
+        <property Name="grail" Caption="大盘监控" TypeName="String" Default="0;1A0001;399006;399002"></property>
+      </properties>
+    </buyer>
+    <buyer Name="DoBuyerMACDCross" Caption="MACD低位买入" Assembly="Security.Strategy.Alpha.dll" ClassName="insp.Security.Strategy.Alpha.Sell.DoBuyerMACDCross">
+      <properties>
+        <property Name="buy_mainlow" Caption="MACD低位" TypeName="double" Default="22"></property>
+        <property Name="buy_cross" Caption="MACD金叉" TypeName="int" Default="0"></property>
+        <property Name="getinMode" Caption="交易方式" TypeName="insp.Security.Strategy.GetInMode" Default="3;50000"></property>
+        <property Name="grail" Caption="大盘监控" TypeName="String" Default="0;1A0001;399006;399002"></property>
+      </properties>
+     </buyer>
+     <buyer Name="DoBuyerCrossOrBias" Caption="低位金叉和大偏离买入" Assembly="Security.Strategy.Alpha.dll" ClassName="insp.Security.Strategy.Alpha.Sell.DoBuyerCrossOrBias">
+       <properties>
+         <property Name="mode" Caption="买入模式" TypeName="String" Default="日线金叉;周线偏离"></property>
+         <property Name="day_low" Caption="日金叉低位" TypeName="double" Default="0"></property>
+         <property Name="day_bias" Caption="日线偏离" TypeName="double" Default=""></property>
+         <property Name="week_low" Caption="周金叉低位" TypeName="double" Default=""></property>
+         <property Name="week_bias" Caption="周线偏离" TypeName="double" Default=""></property>
+         <property Name="getinMode" Caption="交易方式" TypeName="insp.Security.Strategy.GetInMode" Default="3;50000"></property>
+         <property Name="grail" Caption="大盘监控" TypeName="String" Default="0;1A0001;399006;399002"></property>
+       </properties>
+     </buyer>
+   </buyers>
+   
+  
+   <sellers>
+     <seller Name="DoSellerMaxProfilt" Caption="最大收益卖出" Assembly="Security.Strategy.Alpha.dll" ClassName="insp.Security.Strategy.Alpha.Sell.DoSellerMaxProfilt">
+      <properties>        
+        <property Name="maxprofilt" Caption="最大收益" TypeName="double" Default="0.06"></property>        
+        <property Name="maxholddays" Caption="最大持仓天数" TypeName="int" Default="20"></property>
+        <property Name="stoploss" Caption="止损线" TypeName="double" Default="0.1"></property>       
+      </properties>
+    </seller>
+     <seller Name="DoSellerS" Caption="日线S点卖出" Assembly="Security.Strategy.Alpha.dll" ClassName="insp.Security.Strategy.Alpha.Sell.DoSellerS">
+       <properties>
+         <property Name="sell_maxholddays" Caption="最大持仓天数" TypeName="int" Default="40"></property>
+         <property Name="sell_stoploss" Caption="止损线" TypeName="double" Default="0.1"></property>
+       </properties>
+     </seller>
+     <seller Name="DoSellerSense" Caption="感觉卖出" Assembly="Security.Strategy.Alpha.dll" ClassName="insp.Security.Strategy.Alpha.Sell.DoSellerSense">
+        <properties>        
+        <property Name="sell_maxholddays" Caption="最大持仓天数" TypeName="int" Default="40"></property>
+        <property Name="sell_notrun_num" Caption="最大不符次数" TypeName="int" Default="300"></property>
+        <property Name="sell_selectnum" Caption="择机卖出天数" TypeName="int" Default="5"></property>
+        <property Name="sell_mainvalve" Caption="主力线阈值" TypeName="double" Default="70"></property>
+        <property Name="sell_mainvalve_diff" Caption="主力线阈值卖点" TypeName="double" Default="0.025"></property>
+        <property Name="sell_slopediff" Caption="斜率差" TypeName="double" Default="65"></property>
+        <property Name="sell_slopepoint" Caption="斜率卖点" TypeName="double" Default="10"></property>        
+      </properties>
+    </seller>
+    <seller Name="DoSellerStage" Caption="阶梯卖出" Assembly="Security.Strategy.Alpha.dll" ClassName="insp.Security.Strategy.Alpha.Sell.DoSellerStage">
+      <properties>        
+        <property Name="sell_maxholddays" Caption="最大持仓天数" TypeName="int" Default="40"></property>        
+        <property Name="sell_selectdays" Caption="择机卖出天数" TypeName="int" Default="5"></property>
+        <property Name="sell_stoploss" Caption="主力线阈值" TypeName="double" Default="70"></property>
+        <property Name="sell_sellpt" Caption="阶梯卖点" TypeName="String" Default="0.025"></property>        
+      </properties>
+    </seller>
+  </sellers> 
+          
+  <backtest>
+    <properties>
+      <property Name="strategy" Value="alpha4"/>
+      <property Name="funds" Value="1000000"/>      
+      <property Name="taskcount" Value="1"/>
+      <property Name="batchno" Value="100"/>
+      <property Name="datapath" Value="d:\\repository\\"/>
+      <property Name="resultpath" Value="result"/>
+      <property Name="codefile" Value="goodStocks.csv"/>
+      <property Name="begindate" Value="2017-01-01"/>
+      <property Name="enddate" Value="2017-10-30"/>
+      <property Name="parallel" Value="false"/>
+      <property Name="volumecommission" Value="0.0025"/>
+      <property Name="stampduty" Value="0.001"/>
+    </properties>
+  </backtest>
+  
+  <strategys>
+    <strategy Name="alpha4" Caption="主力线策略" Assembly="" ClassName="">
+      <properties>
+        <property Name="buyer" Value="资金主力低位买入"></property>
+        <property Name="seller" Value="感觉卖出"></property>
+        
+      </properties>
+    </strategy>
+    <strategy Name="alpha5" Caption="多周期主力线策略" Assembly="" ClassName="">
+      <properties>        
+        <property Name="buyer" Value="低位金叉和大偏离买入"></property>                
+        <property Name="mode" Value="日线金叉;周线偏离"></property>
+        <property Name="day_low" Value="25"></property>
+        <property Name="day_bias" Value="5"></property>
+        <property Name="week_low" Value="25"></property>
+        <property Name="week_bias" Value="0"></property>
+        <property Name="getinMode" Value="3;50000"></property>
+        <property Name="grail" Value="0;1A0001;399006;399002"></property>
+
+        <property Name="seller" Value="日线S点卖出"></property>
+        <property Name="sell_maxholddays" Value="40"></property>
+        <property Name="sell_stoploss" Value="0.1"></property>
+        
+      </properties>
+    </strategy>
+    <strategy Name="alpha5_1" Caption="主力线买入定制卖出策略" Assembly="" ClassName="">
+      <properties>
+        <property Name="buyer" Value="资金主力低位或金叉买入"></property>
+        <property Name="buy_mainlow" Value="22"></property>
+        <property Name="buy_cross" Value="0"></property>
+        <property Name="getinMode" Value="3;50000"></property>
+        <property Name="grail" Value="0;1A0001;399006;399002"></property>
+
+        <property Name="seller" Value="感觉卖出"></property>
+        <property Name="sell_maxholddays" Value="40"></property>
+        <property Name="sell_notrun_num" Value="300"></property>
+        <property Name="sell_selectnum" Value="5"></property>
+        <property Name="sell_mainvalve" Value="65"></property>
+        <property Name="sell_mainvalve_diff" Value="0.025"></property>
+        <property Name="sell_slopediff" Value="65"></property>
+        <property Name="sell_slopepoint" Value="15"></property>
+        
+        
+      </properties>
+    </strategy>    
+    <strategy Name="alpha5_2" Caption="主力线买入阶梯卖出策略" Assembly="" ClassName="">
+      <properties>
+        <property Name="buyer" Value="MACD低位买入"></property>        
+        <property Name="buy_mainlow" Value="-0.2"></property>
+        <property Name="buy_cross" Value="0"></property>
+        <property Name="getinMode" Value="3;50000"></property>
+        <property Name="grail" Value="0;1A0001;399006;399002"></property>
+        
+        <property Name="seller" Value="阶梯卖出"></property>        
+        <property Name="sell_maxholddays" Value="40"></property>
+        <property Name="sell_selectdays" Value="5"></property>
+        <property Name="sell_stoploss" Value="0.15"></property>
+        <property Name="sell_sellpt" Value="3;0.05|5;0.08|10;0.07|15;0.08|20;0.10|25;0.10|30;0.10|35;0.01|40;0.01"></property>        
+        
+      </properties>
+    </strategy>
+  </strategys>
+ 
+</configuration>

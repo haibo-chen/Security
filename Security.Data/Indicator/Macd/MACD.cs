@@ -73,6 +73,9 @@ namespace insp.Security.Data.Indicator.Macd
                 else if(prevDif > prevdea && difItem.Value < deaItem.Value)
                     item.CROSS = difItem.Value - deaItem.Value;//死叉点
                 macd.Add(item);
+
+                prevDif = difItem.Value;
+                prevdea = deaItem.Value;
             }
 
             return macd;

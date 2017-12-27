@@ -25,7 +25,7 @@ using insp.Utility.Date;
 
 namespace insp.Security.Strategy
 {
-    public abstract class StrategyInstance : IStrategyInstance
+    public class StrategyInstance : IStrategyInstance
     {
         #region 属性
         /// <summary>
@@ -49,7 +49,7 @@ namespace insp.Security.Strategy
         /// <summary>
         /// 版本
         /// </summary>
-        public abstract Version Version { get; }
+        public virtual Version Version { get { return new Version(1, 0, 0, 0); } }
         /// <summary>
         /// 策略元
         /// </summary>
@@ -79,8 +79,16 @@ namespace insp.Security.Strategy
             ConvertUtils.RegisteConvertor<TradeIntent, String>(ConvertUtils.enumtostr<TradeIntent>);
             ConvertUtils.RegisteConvertor<String, GetInMode>((x,format,props) => GetInMode.Parse(x));            
         }
-            
-
+        public StrategyInstance() { }
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        public StrategyInstance(Properties props) { id = "1"; this.props = props; }
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        /// <param name="id"></param>
+        public StrategyInstance(String id, Properties props) { this.id = id; this.props = props; }
 
         /// <summary>
         /// 初始化
@@ -167,21 +175,29 @@ namespace insp.Security.Strategy
         /// </summary>
         /// <param name="props"></param>
         /// <returns></returns>
-        public virtual TotalStat DoTest(IStrategyContext context, Properties props)
+        public virtual TotalStat DoTest(StrategyContext context, Properties testParam)
         {
             //取得回测参数
-            backtestParam = new BacktestParameter(props);
-            log = log4net.LogManager.GetLogger(backtestParam.serialno);
+            this.backtestParam = new BacktestParameter(testParam);
+            log = log4net.LogManager.GetLogger(this.backtestParam.Serialno);
 
             log.Info("");
             log.Info("回测策略实例:" + this.ToString());
-            log.Info("回测数据路径=" + backtestParam.datapath);
-            log.Info("准备回测：回测编号=" + backtestParam.serialno + ",初始资金=" + backtestParam.initfunds.ToString("F2") + ",日期=" + backtestParam.beginDate.ToString("yyyyMMdd") + "-" + backtestParam.endDate.ToString("yyyyMMdd"));
+            log.Info("回测数据路径=" + backtestParam.Datapath);
+            log.Info("准备回测：回测编号=" + backtestParam.Serialno + ",初始资金=" + backtestParam.Initfunds.ToString("F2") + ",日期=" + backtestParam.BeginDate.ToString("yyyyMMdd") + "-" + backtestParam.EndDate.ToString("yyyyMMdd"));
 
             List<String> codes = new List<string>();
-            System.IO.File.ReadAllLines(FileUtils.GetDirectory() + backtestParam.codefilename)
+            System.IO.File.ReadAllLines(FileUtils.GetDirectory() + backtestParam.Codefilename)
                 .ToList().ForEach(x => codes.Add(x.Split(',')[1]));
             log.Info("加载代码" + codes.Count.ToString());
+
+            this.buyer = context.GetBuyer(props.Get<String>("buyer"));
+            if (buyer == null)
+                throw new Exception("回测启动失败：找不到买入算法实现:"+ props.Get<String>("buyer"));
+            this.seller = context.GetSeller(props.Get<String>("seller"));
+            if(seller == null)
+                throw new Exception("回测启动失败：找不到卖出算法实现:" + props.Get<String>("seller"));
+            log.Info("买入算法=" + buyer.Caption + ",卖出算法=" + seller.Caption);
 
             List<TradeBout> bouts = doTestByCodes(codes);
             TotalStat totalStat = doTestByDate(bouts);
@@ -204,7 +220,7 @@ namespace insp.Security.Strategy
             #region 写入回测统计结果
             StringBuilder str = new StringBuilder();
             ////批号
-            str.Append(backtestParam.serialno + ",");
+            str.Append(backtestParam.Serialno + ",");
             ////策略参数
             List<String> paramNames = Meta.GetParameterNames();
             for (int i = 0; i < paramNames.Count; i++)
@@ -230,26 +246,83 @@ namespace insp.Security.Strategy
             stat.WriteRecord(backtestParam.DateRecordFileName, backtestParam.DateDetailFileName);
             #endregion
         }
+
+        protected IBuyer buyer;
+        protected ISeller seller;
+        public virtual IBuyer Buyer { get { return buyer; } set { buyer = value; } }
+        public virtual ISeller Seller { get { return seller; } set { seller = value; } }
+        
         /// <summary>
         /// 对代码集合进行回测
         /// </summary>
         /// <param name="codes"></param>
         /// <returns></returns>
-        protected abstract List<TradeBout> doTestByCodes(List<String> codes);
+        protected virtual List<TradeBout> doTestByCodes(List<String> codes)
+        {
+            if (codes == null || codes.Count <= 0)
+                return new List<TradeBout>();
+
+            IndicatorRepository repository = (IndicatorRepository)backtestParam.Get<Object>("repository");
+            if (repository == null) return null;
+
+            if (buyer == null || Seller == null)
+                throw new Exception("买卖策略对象无效");
+
+            List<TradeBout> allbouts = new List<TradeBout>();
+
+            
+
+            foreach (String code in codes)
+            {
+                TimeSerialsDataSet ds = repository[code];
+                if (ds == null) continue;
+
+                List<TradeBout> bouts = buyer.Execute(code, props, backtestParam);
+                if (bouts == null || bouts.Count <= 0)
+                    continue;
+
+                seller.Execute(bouts, props, backtestParam);
+
+                //最后删除未完成的回合
+                RemoveUnCompeletedBouts(bouts);
+                if (bouts != null && bouts.Count > 0)
+                    allbouts.AddRange(bouts);
+
+                ///打印
+                if (bouts != null && bouts.Count > 0)
+                {
+                    double totalProfilt = allbouts.Sum(x => x.Profit);
+                    double totalCost = allbouts.Sum(x => x.BuyInfo.TradeCost);
+                    log.Info(ds.Code + ":回合数=" + bouts.Count.ToString() +
+                                       ",胜率=" + (bouts.Count(x => x.Win) * 1.0 / bouts.Count).ToString("F2") +
+                                       ",盈利=" + bouts.Sum(x => x.Profit).ToString("F2") +
+                                       ",总胜率=" + (allbouts.Count(x => x.Win) * 1.0 / allbouts.Count).ToString("F3") +
+                                       ",总盈利=" + totalProfilt.ToString("F2") +
+                                       ",平均盈利率=" + (totalProfilt / totalCost).ToString("F3"));
+
+                    /*foreach(TradeBout bout in bouts)
+                    {
+                        log.Info("  " + bout.ToString());
+                    }*/
+
+                }
+            }
+            return allbouts;
+        }
         /// <summary>
         /// 特定日期禁止买入
         /// </summary>
         /// <param name="d"></param>
         /// <param name="code"></param>
         /// <returns></returns>
-        protected abstract bool isForbidBuy(DateTime d,String code,out String reason);
+        protected virtual bool isForbidBuy(DateTime d, String code, out String reason) { reason = ""; return false; }
         /// <summary>
         /// 特定日期禁止持仓
         /// </summary>
         /// <param name="d"></param>
         /// <param name="code"></param>
         /// <returns></returns>
-        protected abstract bool isForbidHold(DateTime d,String code, out String reason);
+        protected virtual bool isForbidHold(DateTime d, String code, out String reason) { reason = ""; return false; }
         /// <summary>
         /// 执行回测
         /// </summary>
@@ -257,11 +330,11 @@ namespace insp.Security.Strategy
         /// <returns></returns>
         public virtual TotalStat doTestByDate(List<TradeBout> bouts)
         {
-            double marketValueMin = backtestParam.InitFund;//日最低市值
-            double marketValueMax = backtestParam.InitFund;//日最高市值
-            double lastmarketValueMax = backtestParam.InitFund;//上一个日最高市值
-            DateTime lastmarketValueMaxDate = backtestParam.beginDate;
-            double curFund = backtestParam.InitFund;       //当前资金
+            double marketValueMin = backtestParam.Initfunds;//日最低市值
+            double marketValueMax = backtestParam.Initfunds;//日最高市值
+            double lastmarketValueMax = backtestParam.Initfunds;//上一个日最高市值
+            DateTime lastmarketValueMaxDate = backtestParam.BeginDate;
+            double curFund = backtestParam.Initfunds;       //当前资金
 
             TotalStat stat = new TotalStat();
             List<DateDetailRecord> records = new List<DateDetailRecord>();//日详细记录            
@@ -273,7 +346,7 @@ namespace insp.Security.Strategy
             IndicatorRepository repository = (IndicatorRepository)backtestParam.Get<Object>("repository");
             String reason = "";
             //遍历每一天
-            for (DateTime d = backtestParam.beginDate; d <= backtestParam.endDate; d = d.AddDays(1))
+            for (DateTime d = backtestParam.BeginDate; d <= backtestParam.EndDate; d = d.AddDays(1))
             {
                 //跳过非工作日
                 //if (!CalendarUtils.IsWorkDay(d))
@@ -392,8 +465,8 @@ namespace insp.Security.Strategy
                 record.curFund = curFund;
                 record.marketValueMin = marketValueMin;
                 record.marketValueMax = marketValueMax;
-                if (marketValueMin < backtestParam.InitFund)
-                    record.retracement = (backtestParam.InitFund - marketValueMin) / backtestParam.InitFund;
+                if (marketValueMin < backtestParam.Initfunds)
+                    record.retracement = (backtestParam.Initfunds - marketValueMin) / backtestParam.Initfunds;
                 if (stat.MaxInitRetracementRate < record.retracement)
                 {
                     stat.MaxInitRetracementRate = record.retracement;
@@ -440,7 +513,7 @@ namespace insp.Security.Strategy
             stat.Count = codes.Count;
             stat.MaxHoldDays = holdDays.Count <= 0 ? 0 : holdDays.Max();
             stat.TotalFund = curFund;
-            stat.TotalProfilt = (curFund - backtestParam.InitFund) / backtestParam.InitFund;
+            stat.TotalProfilt = (curFund - backtestParam.Initfunds) / backtestParam.Initfunds;
             stat.WinRate = stat.WinNum * 1.0 / stat.BoutNum;
 
             return stat;
@@ -466,14 +539,14 @@ namespace insp.Security.Strategy
         /// <summary>
         /// 实际执行
         /// </summary>
-        public abstract void Run(Properties context);
+        public virtual void Run(Properties context) { }
 
         /// <summary>
         /// 事件触发动作
         /// </summary>
         /// <param name="context"></param>
         /// <param name="args"></param>
-        public abstract void DoAction(IStrategyContext context, EventArgs args);
+        public virtual void DoAction(IStrategyContext context, EventArgs args) { }
         #endregion
     }
 }

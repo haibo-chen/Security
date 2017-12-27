@@ -47,7 +47,7 @@ namespace insp.Security.Strategy
         /// <summary>
         /// 策略元
         /// </summary>
-        IStrategyMeta Meta { get; }
+        IStrategyMeta Meta { get;  }
 
         /// <summary>
         /// 版本
@@ -78,7 +78,7 @@ namespace insp.Security.Strategy
         /// </summary>
         /// <param name="props"></param>
         /// <returns></returns>
-        TotalStat DoTest(IStrategyContext context,Properties props);
+        TotalStat DoTest(StrategyContext context,Properties props);
 
         /// <summary>
         /// 实际执行

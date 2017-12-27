@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using insp.Utility.Bean;
+using insp.Utility.Reflection;
 
 namespace insp.Utility.Collections
 {
@@ -364,6 +365,49 @@ namespace insp.Utility.Collections
         public static void Save<T>(this List<T> list,String filename,String encode,String[] columns,String format)
         {
 
+        }
+        #endregion
+
+        #region 在集合中查找
+        public static Object Find(this IList arr, String propertyName, Object value)
+        {
+            if (arr == null || arr.Count <= 0) return null;
+            foreach (Object t in arr)
+            {
+                if (t == null) continue;
+                Object propValue = t.FindMemberValue(propertyName);
+                if (propValue == value)
+                    return t;
+                if (value == null) continue;
+                if (value.Equals(propValue))
+                    return t;
+            }
+            return null;
+        }
+        public static Object Find(this Array arr, String propertyName, Object value)
+        {
+            if (arr == null || arr.Length <= 0) return null;
+            return new ArrayList(arr).Find(propertyName, value);
+        }
+        public static T Find<T>(this List<T> list, String propertyName, Object value)
+        {
+            if (list == null || list.Count<=0) return default(T);
+            foreach (T t in list)
+            {
+                if (t == null) continue;
+                Object propValue = t.FindMemberValue(propertyName);
+                if (propValue == value)
+                    return t;
+                if (value == null) continue;
+                if (value.Equals(propValue))
+                    return t;
+            }
+            return default(T);
+        }
+        public static T Find<T>(this T[] arr,String propertyName,Object value)
+        {
+            if (arr == null || arr.Length <= 0) return default(T);
+            return new List<T>(arr).Find(propertyName, value);
         }
         #endregion
     }

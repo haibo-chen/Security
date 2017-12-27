@@ -41,7 +41,7 @@ namespace insp.Security.Strategy.Alpha
                         new PropertyDescriptor(2, "mainforcerough", "主力线模糊值", null, "int", "0", "", true, false),
                         new PropertyDescriptor(3, "maxprofilt", "最大盈利率", null, "double", "0.05", "", true, false),
                         new PropertyDescriptor(4, "maxholddays", "最大持仓天数", null, "int", "60", "", true, false),
-                        new PropertyDescriptor(5, "fundpergetin","建仓单位资金",null, "insp.Security.Strategy.GetInMode", "3;50000.0","",true,false),
+                        new PropertyDescriptor(5, "getinMode", "建仓单位资金",null, "insp.Security.Strategy.GetInMode", "3;50000.0","",true,false),
                         new PropertyDescriptor(6, "stoploss", "止损线", null, "double", "0.1", "", true, false),
                         new PropertyDescriptor(7, "buypointdays", "买点附近天数", null, "int", "3", "", true, false),
                         new PropertyDescriptor(8, "maxbuynum", "最大买入次数", null, "int", "0", "", true, false),

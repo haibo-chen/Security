@@ -16,80 +16,28 @@ namespace insp.Security.Strategy
     public class BacktestParameter : Properties
     {
         #region 参数
-        /// <summary>
-        /// 数据路径
-        /// </summary>
-        public String datapath, resultpath, codefilename;
-        /// <summary>
-        /// 初始资金
-        /// </summary>
-        public double initfunds;
+        public String Runparallel { get { return Get<String>("parallel"); } }
+        public String batchno { get { return Get<String>("batchno"); } }
+        public int BatchNo { get { return Get<int>("batchno"); } }
+        public String Serialno { get { return Get<String>("serialno", ""); } }
+        public double Initfunds { get { return Get<double>("funds"); } }
 
-        /// <summary>
-        /// 回测开始日期
-        /// </summary>
-        public DateTime beginDate;
-        /// <summary>
-        /// 回测结束日期
-        /// </summary>
-        public DateTime endDate;
+        public int TaskCount { get { return Get<int>("taskcount"); } }
+        public double Volumecommission { get { return Get<double>("volumecommission"); } }
+        public double Stampduty { get { return Get<double>("stampduty"); } }
+        public DateTime BeginDate { get { return Get<DateTime>("begindate"); } }
+        public DateTime EndDate { get { return Get<DateTime>("enddate"); } }
 
-        /// <summary>
-        /// 是否并行
-        /// </summary>
-        public String runparallel = "false";
-        /// <summary>
-        /// 回测批号
-        /// </summary>
-        public String batchno;
-        /// <summary>
-        /// 回测序号
-        /// </summary>
-        public String serialno;
-        /// <summary>
-        /// 卷商交易佣金
-        /// </summary>
-        public double volumecommission = 0.0025;
-        /// <summary>
-        /// 印花税
-        /// </summary>
-        public double stampduty = 0.001;
-    
+        public String Datapath { get { return FileUtils.GetDirectory(Get<String>("datapath")); } }
+        public String Resultpath { get { return FileUtils.GetDirectory(Get<String>("resultpath"));} }
+        public String Codefilename { get { return Get<String>("codefile"); } }
 
-        /// <summary>
-        /// 回测状态文件
-        /// </summary>
-        public String StateFileName;
-        /// <summary>
-        /// 按照日期记录的文件名
-        /// </summary>
-        public String DateRecordFileName;
-        /// <summary>
-        /// 按照日期的详细记录文件名
-        /// </summary>
-        public String DateDetailFileName;
-        /// <summary>
-        /// 结果记录
-        /// </summary>
-        public String ResultFileName;
-        /// <summary>
-        /// 批回测结果文件
-        /// </summary>
-        public String BatchResultFileName;
+        public String StateFileName { get { return Resultpath + Serialno + ".state"; } }
+        public String ResultFileName { get { return Resultpath + Serialno + ".result"; } }
+        public String DateRecordFileName { get { return Resultpath + Serialno + ".date"; } }
+        public String DateDetailFileName { get { return Resultpath + Serialno + ".date.bout"; } }
 
-        /// <summary>
-        /// 初始资金
-        /// </summary>
-        public double InitFund { get { return this.initfunds; } }
-        /// <summary>
-        /// 测试开始日期
-        /// </summary>
-        public DateTime BeginDate { get { return beginDate; } }
-        /// <summary>
-        /// 测试结束日期
-        /// </summary>
-        public DateTime EndDate { get { return endDate; } }
-
+        public String BatchResultFileName { get { return Resultpath + batchno + ".result"; } }
         
         #endregion
 
@@ -107,34 +55,7 @@ namespace insp.Security.Strategy
         /// <param name="props"></param>
         public BacktestParameter(Properties props)
         {
-            this.Clone(props);
-            Init();
-        }
-        /// <summary>
-        /// 初始化参数值
-        /// </summary>
-        public void Init()
-        {
-            runparallel = Get<String>("parallel");
-            batchno = Get<String>("batchno");
-            serialno = Get<String>("serialno","");
-            initfunds = Get<double>("funds");
-
-            volumecommission = Get<double>("volumecommission");
-            stampduty = Get<double>("stampduty");
-            beginDate = Get<DateTime>("begindate");
-            endDate = Get<DateTime>("enddate");
-            
-            datapath = FileUtils.GetDirectory(Get<String>("datapath"));
-            resultpath = FileUtils.GetDirectory(Get<String>("resultpath"));
-            codefilename = Get<String>("codefile");
-
-            StateFileName = resultpath + serialno + ".state";
-            ResultFileName = resultpath + serialno + ".result";
-            DateRecordFileName = resultpath + serialno + ".date";
-            DateDetailFileName = resultpath + serialno + ".date.bout";
-
-            BatchResultFileName = resultpath + batchno + ".result";
+            this.Clone(props);        
         }
         #endregion
 

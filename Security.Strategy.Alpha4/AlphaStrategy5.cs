@@ -38,7 +38,7 @@ namespace insp.Security.Strategy.Alpha
                         new PropertyDescriptor(3, "day_bias", "日线偏离", null, "double", "0", "", true, false),
                         new PropertyDescriptor(4, "week_low", "周线低位", null, "double", "0.05", "", true, false),
                         new PropertyDescriptor(5, "week_bias", "周线偏离", null, "int", "60", "", true, false),
-                        new PropertyDescriptor(6, "fundpergetin", "建仓单位资金", null, "insp.Security.Strategy.GetInMode", "3;50000.0", "", true, false),
+                        new PropertyDescriptor(6, "getinMode", "建仓单位资金", null, "insp.Security.Strategy.GetInMode", "3;50000.0", "", true, false),
                         new PropertyDescriptor(7, "grail", "大盘指数", null, "insp.Security.Strategy.Alpha4.GrailParameter", "0", "", true, false)
 
                 );

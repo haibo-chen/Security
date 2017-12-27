@@ -70,7 +70,7 @@ namespace insp.Security.Strategy.Alpha
             p_maxprofilt = this.props.Get<double>("maxprofilt");
             p_maxholddays = this.props.Get<int>("maxholddays");
             p_stoploss = this.props.Get<double>("stoploss");
-            p_fundpergetin = GetInMode.Parse(this.props.Get<String>("fundpergetin"));
+            p_fundpergetin = GetInMode.Parse(this.props.Get<String>("getinMode"));
             p_buypointdays = this.props.Get<int>("buypointdays");
             p_maxbuynum = this.props.Get<int>("maxbuynum");
             p_grail = GrailParameter.Parse(this.props.Get<String>("grail"));
@@ -185,12 +185,12 @@ namespace insp.Security.Strategy.Alpha
 
             //取得回测参数
             backtestParam = new BacktestParameter(props);
-            log = log4net.LogManager.GetLogger(backtestParam.serialno);
+            log = log4net.LogManager.GetLogger(backtestParam.Serialno);
 
             log.Info("");
             log.Info("回测策略实例:" + this.ToString());
-            log.Info("回测数据路径=" + backtestParam.datapath);            
-            log.Info("准备回测：回测编号=" + backtestParam.serialno + ",初始资金=" + backtestParam.initfunds.ToString("F2") + ",日期=" + backtestParam.beginDate.ToString("yyyyMMdd") + "-" + backtestParam.endDate.ToString("yyyyMMdd"));
+            log.Info("回测数据路径=" + backtestParam.Datapath);            
+            log.Info("准备回测：回测编号=" + backtestParam.Serialno + ",初始资金=" + backtestParam.Initfunds.ToString("F2") + ",日期=" + backtestParam.BeginDate.ToString("yyyyMMdd") + "-" + backtestParam.EndDate.ToString("yyyyMMdd"));
 
 
             //执行回测
@@ -216,11 +216,11 @@ namespace insp.Security.Strategy.Alpha
         /// <returns></returns>
         public TotalStat doTestByDate(IStrategyContext context, Properties props)
         {
-            double marketValueMin = backtestParam.InitFund;//日最低市值
-            double marketValueMax = backtestParam.InitFund;//日最高市值
-            double lastmarketValueMax = backtestParam.InitFund;//上一个日最高市值
-            DateTime lastmarketValueMaxDate = backtestParam.beginDate;
-            double curFund = backtestParam.InitFund;       //当前资金
+            double marketValueMin = backtestParam.Initfunds;//日最低市值
+            double marketValueMax = backtestParam.Initfunds;//日最高市值
+            double lastmarketValueMax = backtestParam.Initfunds;//上一个日最高市值
+            DateTime lastmarketValueMaxDate = backtestParam.BeginDate;
+            double curFund = backtestParam.Initfunds;       //当前资金
 
             TotalStat stat = new TotalStat();
             List<DateDetailRecord> records = new List<DateDetailRecord>();//日详细记录            
@@ -232,7 +232,7 @@ namespace insp.Security.Strategy.Alpha
             p_grail.Init(null); //初始化大盘指数数据
             char[] drails = new char[3] { 'U', 'U', 'U' }; //三个大盘的买卖点状态，U表示未知
             //遍历每一天
-            for (DateTime d = backtestParam.beginDate; d <= backtestParam.endDate; d = d.AddDays(1))
+            for (DateTime d = backtestParam.BeginDate; d <= backtestParam.EndDate; d = d.AddDays(1))
             {
                 //跳过非工作日
                 //if (!CalendarUtils.IsWorkDay(d))
@@ -349,8 +349,8 @@ namespace insp.Security.Strategy.Alpha
                 record.curFund = curFund;
                 record.marketValueMin = marketValueMin;
                 record.marketValueMax = marketValueMax;
-                if (marketValueMin < backtestParam.InitFund)
-                   record.retracement = (backtestParam.InitFund - marketValueMin) / backtestParam.InitFund;
+                if (marketValueMin < backtestParam.Initfunds)
+                   record.retracement = (backtestParam.Initfunds - marketValueMin) / backtestParam.Initfunds;
                 if(stat.MaxInitRetracementRate < record.retracement)
                 {
                     stat.MaxInitRetracementRate = record.retracement;
@@ -397,7 +397,7 @@ namespace insp.Security.Strategy.Alpha
             stat.Count = codes.Count;
             stat.MaxHoldDays = holdDays.Max();
             stat.TotalFund = curFund;
-            stat.TotalProfilt = (curFund - backtestParam.InitFund) / backtestParam.InitFund;
+            stat.TotalProfilt = (curFund - backtestParam.Initfunds) / backtestParam.Initfunds;
             stat.WinRate = stat.WinNum*1.0 / stat.BoutNum;
 
             return stat;
@@ -416,13 +416,13 @@ namespace insp.Security.Strategy.Alpha
         {
             
             //取得回测代码集
-            if(codes==null|| codes.Count<=0) codes = loadCodes(backtestParam.datapath, backtestParam.codefilename);
+            if(codes==null|| codes.Count<=0) codes = loadCodes(backtestParam.Datapath, backtestParam.Codefilename);
 
             //读取上次记录
             backtestlastpos = FileUtils.ReadText(backtestParam.StateFileName);
 
             //并行执行   
-            if (backtestParam.runparallel.ToLower() == "true")
+            if (backtestParam.Runparallel.ToLower() == "true")
                 Parallel.ForEach<String>(codes, doTestByCode);
             else
                 codes.ForEach(x => doTestByCode(x));
@@ -441,12 +441,12 @@ namespace insp.Security.Strategy.Alpha
         private void doTestByCode(String code)
         {            
             //创建数据集
-            StrategyDataSet ds = StrategyDataSet.CreateOrLoad(code, backtestParam.datapath, backtestParam.resultpath,true, backtestParam.serialno);
+            StrategyDataSet ds = StrategyDataSet.CreateOrLoad(code, backtestParam.Datapath, backtestParam.Resultpath,true, backtestParam.Serialno);
             if (ds == null)
                 return;
             
             //判断上次执行状态保存,如果已经回测过，则跳过
-            if (backtestlastpos != "" && backtestParam.runparallel.ToLower() != "true")
+            if (backtestlastpos != "" && backtestParam.Runparallel.ToLower() != "true")
             {
                 if (backtestlastpos != code)
                     return;
@@ -473,7 +473,7 @@ namespace insp.Security.Strategy.Alpha
 
 
             //执行回测
-            for (DateTime d = backtestParam.beginDate; d <= backtestParam.endDate; d = d.AddDays(1))
+            for (DateTime d = backtestParam.BeginDate; d <= backtestParam.EndDate; d = d.AddDays(1))
             {
                 //if (!CalendarUtils.IsWorkDay(d))
                 //    continue;
@@ -499,7 +499,7 @@ namespace insp.Security.Strategy.Alpha
             //释放不用的内存
             ds.Dispose();
             //记录回测执行位置 
-            if(backtestParam.runparallel.ToLower() != "true")
+            if(backtestParam.Runparallel.ToLower() != "true")
                 System.IO.File.WriteAllText(backtestParam.StateFileName, ds.code);
             
             GC.Collect();
@@ -576,7 +576,7 @@ namespace insp.Security.Strategy.Alpha
 
                 int amount = (int)(fund / price);
                 TradeBout newBout = new TradeBout(ds.code);
-                newBout.RecordTrade(1, d, TradeDirection.Buy, price, amount, backtestParam.volumecommission, 0, reason);
+                newBout.RecordTrade(1, d, TradeDirection.Buy, price, amount, backtestParam.Volumecommission, 0, reason);
                 ds.tradeRecords.Bouts.Add(newBout);
                 return newBout;
             }
@@ -608,7 +608,7 @@ namespace insp.Security.Strategy.Alpha
                 {
                     double price = bout.BuyInfo.TradePrice * (1+ p_maxprofilt);
                     int amount = bout.BuyInfo.Amount;
-                    bout.RecordTrade(2, d, TradeDirection.Sell, price, amount, backtestParam.volumecommission, backtestParam.stampduty,"盈利>="+ p_maxprofilt.ToString("F2"));
+                    bout.RecordTrade(2, d, TradeDirection.Sell, price, amount, backtestParam.Volumecommission, backtestParam.Stampduty,"盈利>="+ p_maxprofilt.ToString("F2"));
                     results.Add(bout);
                 }
                 else if (p_maxholddays != 0 && CalendarUtils.WorkDayCount(bout.BuyInfo.TradeDate,d) >= p_maxholddays) //持仓超过n天
@@ -627,7 +627,7 @@ namespace insp.Security.Strategy.Alpha
                         if(item != null && item.HIGH >= bout.BuyInfo.TradePrice)
                         {
                             int tamount = bout.BuyInfo.Amount;
-                            bout.RecordTrade(2, item.Date, TradeDirection.Sell, bout.BuyInfo.TradePrice, tamount, backtestParam.volumecommission, backtestParam.stampduty, "持仓超过" + p_maxholddays.ToString() + "后第"+(k+1).ToString()+"日卖出");
+                            bout.RecordTrade(2, item.Date, TradeDirection.Sell, bout.BuyInfo.TradePrice, tamount, backtestParam.Volumecommission, backtestParam.Stampduty, "持仓超过" + p_maxholddays.ToString() + "后第"+(k+1).ToString()+"日卖出");
                             results.Add(bout);
                             selled = true;
                             break;
@@ -685,14 +685,14 @@ namespace insp.Security.Strategy.Alpha
 
                     double price = dayLineItem.CLOSE;
                     int amount = bout.BuyInfo.Amount;
-                    bout.RecordTrade(2, d, TradeDirection.Sell, price, amount, backtestParam.volumecommission, backtestParam.stampduty,"持仓超过"+ p_maxholddays.ToString());
+                    bout.RecordTrade(2, d, TradeDirection.Sell, price, amount, backtestParam.Volumecommission, backtestParam.Stampduty,"持仓超过"+ p_maxholddays.ToString());
                     results.Add(bout);
                 }
                 else if (p_stoploss > 0 && -1 * percent > p_stoploss)//达到止损线
                 {
                     double price = dayLineItem.CLOSE;
                     int amount = bout.BuyInfo.Amount;
-                    bout.RecordTrade(2, d, TradeDirection.Sell, price, amount, backtestParam.volumecommission, backtestParam.stampduty,"到达止损线"+ p_stoploss.ToString("F2"));
+                    bout.RecordTrade(2, d, TradeDirection.Sell, price, amount, backtestParam.Volumecommission, backtestParam.Stampduty, "到达止损线"+ p_stoploss.ToString("F2"));
                     results.Add(bout);
                 }
 
@@ -723,10 +723,10 @@ namespace insp.Security.Strategy.Alpha
         private void loadTradeRecords()
         {
             //读取记录
-            List<String> codes = this.loadCodes(backtestParam.datapath, backtestParam.codefilename);
+            List<String> codes = this.loadCodes(backtestParam.Datapath, backtestParam.Codefilename);
             Parallel.ForEach(codes, code => 
                 {
-                    StrategyDataSet ds = StrategyDataSet.CreateOrLoad(code, backtestParam.datapath, backtestParam.resultpath, true, backtestParam.serialno);
+                    StrategyDataSet ds = StrategyDataSet.CreateOrLoad(code, backtestParam.Datapath, backtestParam.Resultpath, true, backtestParam.Serialno);
                     if (ds != null)
                         this.dataset.Add(ds);
                 });            
@@ -759,7 +759,7 @@ namespace insp.Security.Strategy.Alpha
             #region 写入回测统计结果
             StringBuilder str = new StringBuilder();
             ////批号
-            str.Append(backtestParam.serialno + ",");
+            str.Append(backtestParam.Serialno + ",");
             ////策略参数
             List<String> paramNames = Meta.GetParameterNames();
             for (int i = 0; i < paramNames.Count; i++)

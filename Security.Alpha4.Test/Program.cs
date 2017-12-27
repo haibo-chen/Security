@@ -28,20 +28,25 @@ namespace Security.Alpha4.Test
 
         static void Main(string[] args)
         {
-            StrategyFactory factory = new StrategyFactory();
+            StrategyContext context = new StrategyContext();
+            context.DoTest();
+
+
+            /*StrategyFactory factory = new StrategyFactory();
             factory.Put(new AlphaStrategy5())
-                   .Put(new AlphaStrategy6());
+                   .Put(new AlphaStrategy6())
+                   .Put(new AlphaStrategy7());
 
-            
 
-            Properties prop = Properties.Load(FileUtils.GetDirectory() + "alpha6.properties", Encoding.UTF8);
+
+            Properties prop = Properties.Load(FileUtils.GetDirectory() + "alpha7.properties", Encoding.UTF8);
 
             IndicatorRepository repository = new IndicatorRepository(prop.Get<String>("backtest.datapath"));
             repository.Initilization();
             
-            prop.Put("backtest.repository", repository);
+            prop.Put("backtest.repository", repository);*/
 
-            new BacktestContext(prop, factory).Build().Run();
+            //new BacktestContext(prop, factory).Build().Run();
         }
 
     } 

@@ -47,9 +47,11 @@
   <ItemGroup>
     <Compile Include="DateDetailRecord.cs" />
     <Compile Include="GetInMode.cs" />
+    <Compile Include="IBuyerSeller.cs" />
+    <Compile Include="StrategyConfiguration.cs" />
     <Compile Include="StrategyFactory.cs" />
     <Compile Include="StrategyInstance.cs" />
-    <Compile Include="Test\BacktestContext.cs" />
+    <Compile Include="StrategyMeta.cs" />
     <Compile Include="Test\BacktestParameter.cs" />
     <Compile Include="Test\Executor.cs" />
     <Compile Include="Test\IBacktestContext.cs" />

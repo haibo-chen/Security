@@ -587,7 +587,7 @@ namespace insp.Security.Data
             IndicatorMeta meta = metas[name];
             if (meta == null)
                 throw new Exception("缺少"+name+"的元数据");
-            String filename = this.GetFullFileName(meta, TimeUnit.week);
+            String filename = this.GetFullFileName(meta, tu);
             ts.Save(filename);
         }
         #endregion

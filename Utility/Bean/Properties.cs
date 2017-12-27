@@ -107,8 +107,21 @@ namespace insp.Utility.Bean
         /// KEY集合
         /// </summary>
         public List<String> Keys { get { return new List<string>(keys); } }
-        
+
         #endregion
+
+        #region 初始化
+        public Properties()
+        {
+
+        }
+        public Properties(List<Property> props)
+        {
+            if (props == null || props.Count <= 0) return;
+            props.ForEach(x => this.Put(x.Name, x.Value));
+        }
+        #endregion
+
         #region 文件读写
         /// <summary>
         /// 克隆

@@ -14,6 +14,7 @@ using insp.Security.Data;
 using insp.Security.Data.Security;
 using insp.Security.Data.kline;
 using insp.Utility.Collections.Time;
+using insp.Security.Data.Indicator.Macd;
 
 namespace insp.Security.Import
 {
@@ -307,6 +308,33 @@ namespace insp.Security.Import
                     continue;
                 showText(code + "...");
                 
+            }
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            if (repository == null)
+            {
+                repository = new IndicatorRepository(textBox2.Text);
+                repository.Initilization();
+            }
+            SecurityPropertiesSet securities = repository.Securities;
+            List<String> codes = securities.Codes;
+            int num = 0;
+            foreach (String code in codes)
+            {
+                if (code == null || code == "") continue;
+                TimeSerialsDataSet tsd = repository[code];
+                if (tsd == null) continue;
+
+                KLine dayLine = tsd.DayKLine;
+                if (dayLine == null) continue;
+
+                MACD macd = (MACD)tsd.Create("macd", TimeUnit.day, false);
+                if (macd == null) continue;
+
+
+
             }
         }
         #endregion

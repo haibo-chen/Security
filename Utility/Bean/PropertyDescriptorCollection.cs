@@ -55,6 +55,25 @@ namespace insp.Utility.Bean
             return pd == null ? -1 : this.IndexOf(pd);
         }
 
+        public List<Property> Check(List<Property> props)
+        {
+            List<Property> result = new List<Property>();
+            for(int i=0;i<this.Count;i++)
+            {
+                PropertyDescriptor pd = this[i];
+                Property prop = props.FirstOrDefault(x => x.Name == pd.name);
+                if (prop == null) result.Add(new Property() { Name = pd.name, Value = pd.DefaultValueText });
+                else
+                {
+                    result.Add(prop);
+                    props.Remove(prop);
+                }
+            }
+            if (props.Count > 0)
+                result.AddRange(props);
+            return result;
+        }
+
         
     }
 }

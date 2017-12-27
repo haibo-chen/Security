@@ -105,11 +105,10 @@ namespace insp.Utility.Reflection
             return attr.HasName(name);
         }
         public static MemberInfo FindMember(this Type type, String membername)
-        {          
-            MemberInfo[] mems = type.GetMember(membername, BindingFlags.Default);
-            if (mems == null || mems.Length <= 0)
-                return null;
-            return mems[0];
+        {
+            MemberInfo[] mems = type.GetMembers();
+            return mems.FirstOrDefault(x => x.Name == membername);
+          
         }
 
         #endregion
@@ -167,7 +166,32 @@ namespace insp.Utility.Reflection
 
             return default(T);
         }
+        public static void SetMemberValue(this Object obj,String memberName,Object value,bool throwException = false)
+        {
+            if(obj == null)
+            {
+                if (throwException)
+                    throw new Exception("修改成员值失败:对象无效："+memberName);
+                return;
+            }
+            MemberInfo member = FindMember(obj.GetType(),memberName);
+            if (member == null)
+            {
+                if (throwException)
+                    throw new Exception("修改成员值失败:找不到成员：" + memberName+":"+obj.ToString());
+                return;
+            }
+            try
+            {
+                SetValue(member,obj,value);
+            }
+            catch(Exception e)
+            {
+                if (throwException)
+                    throw new Exception("修改成员值失败:"+e.Message);
+            }
 
+        }
         public static void SetValue(this MemberInfo member, Object owner,Object value)
         {
             if (member.MemberType == MemberTypes.Field)
@@ -175,7 +199,7 @@ namespace insp.Utility.Reflection
             else if (member.MemberType == MemberTypes.Property)
             {
                 if(((PropertyInfo)member).GetSetMethod() != null)
-                    ((PropertyInfo)member).GetSetMethod().SetValue(owner, value);
+                    ((PropertyInfo)member).GetSetMethod().Invoke(owner, new Object[] { value });
             }
         }
 

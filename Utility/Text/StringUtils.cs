@@ -88,6 +88,23 @@ namespace insp.Utility.Text
             }
             return ds.ToArray();
         }
+
+        public static List<double[]> ToDoubleArrayList(String str, String sep1, String sep2)
+        {
+            List<double[]> r = new List<double[]>();
+            if (str == null || str == "")
+                return r;
+            String[] s1 = str.Split(sep1.ToCharArray());
+            if (s1 == null || s1.Length <= 0) return r;
+            foreach (String t1 in s1)
+            {
+                if (t1 == null || t1.Trim() == "") continue;
+                String[] t2 = t1.Split(sep2.ToCharArray());
+                double[] d2 = t2.ToDoubleArray();
+                r.Add(d2);
+            }
+            return r;
+        }
         #endregion
 
 
@@ -128,7 +145,9 @@ namespace insp.Utility.Text
             if (strs == null || strs.Length <= 0) return false;
             return strs.ToList().Exists(x => x.Equals(s, ignoreCase ? StringComparison.CurrentCultureIgnoreCase : StringComparison.CurrentCulture));
         }
+
         
+
         #endregion
     }
 

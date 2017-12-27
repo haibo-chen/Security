@@ -72,7 +72,7 @@ namespace insp.Security.Alpha4.Backtest
 
             //执行策略实例的回测
             instance.Initilization();
-            instance.DoTest(StrategyContext.Default, backtestProps);
+            instance.DoTest(new StrategyContext(), backtestProps);
         }
 
         

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace insp.Utility.Bean
 {
@@ -15,6 +17,7 @@ namespace insp.Utility.Bean
         /// <summary>
         /// double值
         /// </summary>
+        [XmlIgnore]
         public readonly static PropertyDescriptor Double = new PropertyDescriptor() {name="SingleDouble", typeName ="double", defaultValue ="0"};
         #endregion
 
@@ -26,6 +29,7 @@ namespace insp.Utility.Bean
         /// <summary>
         /// 序号 
         /// </summary>
+        [XmlAttribute]
         public int XH { get { return xh; } set { xh = value; } }
 
         /// <summary>
@@ -35,6 +39,7 @@ namespace insp.Utility.Bean
         /// <summary>
         /// 名称
         /// </summary>
+        [XmlAttribute]
         public String Name { get { return name; } set { name = value; } }
 
         /// <summary>
@@ -44,6 +49,7 @@ namespace insp.Utility.Bean
         /// <summary>
         /// 名称
         /// </summary>
+        [XmlAttribute]
         public String Caption { get { return caption; } set { caption = value; } }
 
         /// <summary>
@@ -57,7 +63,8 @@ namespace insp.Utility.Bean
         /// <summary>
         /// 别名集合
         /// </summary>
-        public String[] AliaNames { get { return alias.ToArray(); } set { alias.Clear();alias.AddRange(value); } }
+        [XmlAttribute]
+        public String[] AliaNames { get { return alias.ToArray(); } set { alias.Clear();if(value!=null&& value.Length>0)alias.AddRange(value); } }
         /// <summary>
         /// 类型名
         /// </summary>
@@ -65,6 +72,7 @@ namespace insp.Utility.Bean
         /// <summary>
         /// 类型名
         /// </summary>
+        [XmlAttribute]
         public String TypeName { get { return typeName; } set { typeName = value; } }
         /// <summary>
         /// 类型
@@ -83,6 +91,7 @@ namespace insp.Utility.Bean
         /// <summary>
         /// 转换格式
         /// </summary>
+        [XmlAttribute]
         public String Format { get { return format; } set { format = value; } }
 
         /// <summary>
@@ -92,11 +101,18 @@ namespace insp.Utility.Bean
         /// <summary>
         /// 缺省值
         /// </summary>
+        [XmlAttribute]
+        public String Default { get { return defaultValue; } set { defaultValue = value; } }
+        /// <summary>
+        /// 缺省值
+        /// </summary>
+        [XmlIgnore]
         public String DefaultValueText { get { return defaultValue; }set { defaultValue = value; } }
         /// <summary>
         /// 缺省值
         /// </summary>
-        public Object DefaultValue { get; }
+        [XmlIgnore]
+        public Object DefaultValue { get { return ConvertUtils.strToObject(defaultValue, Type, format); } }
 
         /// <summary>
         /// 主属性
@@ -105,6 +121,7 @@ namespace insp.Utility.Bean
         /// <summary>
         /// 主属性 
         /// </summary>
+        [XmlAttribute]
         public bool Primary { get { return primary; } set { primary = value; } }
 
         public override string ToString()
@@ -119,6 +136,7 @@ namespace insp.Utility.Bean
         /// <summary>
         /// 必须
         /// </summary>
+        [XmlAttribute]
         public bool Required { get { return required; } set { required = value; } }
 
         /// <summary>

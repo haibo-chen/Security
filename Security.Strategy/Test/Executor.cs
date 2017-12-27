@@ -31,10 +31,12 @@ namespace insp.Security.Strategy
         private readonly IStrategyMeta meta;
         private readonly String instanceVersion;
         private List<ExecuteParam> param;
+        private StrategyContext context;
 
 
-        public Executor(IStrategyMeta meta,String instanceVersion,List<ExecuteParam> param)
-        {            
+        public Executor(StrategyContext context,IStrategyMeta meta,String instanceVersion,List<ExecuteParam> param)
+        {
+            this.context = context;
             this.meta = meta;
             this.instanceVersion = instanceVersion;
             this.param = new List<ExecuteParam>(param);
@@ -54,7 +56,7 @@ namespace insp.Security.Strategy
                     IStrategyInstance instance = meta.CreateInstance(param[i].backtestxh, param[i].instanceParam, instanceVersion);
                     logger.Info("启动回测：...");
                     instance.Initilization();
-                    instance.DoTest(StrategyContext.Default, param[i].backtestProp);
+                    instance.DoTest(context, param[i].backtestProp);
 
                     String batchno = param[i].backtestProp.Get<String>("batchno");
                     String resultPath = param[i].backtestProp.Get<String>("resultpath");

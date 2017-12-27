@@ -48,6 +48,7 @@
             this.button6 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.button10 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button9 = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
@@ -62,7 +63,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.button10 = new System.Windows.Forms.Button();
+            this.button11 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -276,6 +277,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.button11);
             this.tabPage3.Controls.Add(this.button10);
             this.tabPage3.Controls.Add(this.checkBox1);
             this.tabPage3.Controls.Add(this.button9);
@@ -291,6 +293,16 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Alpha";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(17, 112);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(192, 23);
+            this.button10.TabIndex = 7;
+            this.button10.Text = "生成MACD";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // checkBox1
             // 
@@ -420,15 +432,15 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(131, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
-            // button10
+            // button11
             // 
-            this.button10.Location = new System.Drawing.Point(17, 112);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(192, 23);
-            this.button10.TabIndex = 7;
-            this.button10.Text = "生成MACD";
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
+            this.button11.Location = new System.Drawing.Point(215, 112);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(192, 23);
+            this.button11.TabIndex = 8;
+            this.button11.Text = "统计预期盈利";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
             // Form1
             // 
@@ -493,6 +505,7 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button button11;
     }
 }
 

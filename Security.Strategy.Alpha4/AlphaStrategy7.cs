@@ -7,21 +7,21 @@ using System.Threading.Tasks;
 
 namespace insp.Security.Strategy.Alpha
 {
-    public class AlphaStrategy6 : IStrategyMeta
+    public class AlphaStrategy7 : IStrategyMeta
     {
         #region 实现IStrategyMeta
         /// <summary>
         /// 名称
         /// </summary>
-        public String Name { get { return "alpha6"; } }
+        public String Name { get { return "alpha7"; } }
         /// <summary>
         /// 名称
         /// </summary>
-        public string Caption { get { return "Alpha6.0"; } }
+        public string Caption { get { return "Alpha7.0"; } }
         /// <summary>
         /// 版本
         /// </summary>
-        public Version Version { get { return new Version(5, 0, 0); } }
+        public Version Version { get { return new Version(7,0, 0); } }
 
         /// <summary>
         /// 参数信息
@@ -34,12 +34,9 @@ namespace insp.Security.Strategy.Alpha
                         new PropertyDescriptor(1, "buy_day_mainlow", "主力线低位", null, "double", "10", "", true, false),
                         new PropertyDescriptor(2, "buy_day_corss", "金叉", null, "int", "10", "", true, false),
                         new PropertyDescriptor(3, "sell_maxholddays", "最大持仓天数", null, "int", "0", "", true, false),
-                        new PropertyDescriptor(4, "sell_notrun_num", "最大持仓天数", null, "int", "0", "", true, false),
-                        new PropertyDescriptor(5, "sell_selectnum", "择机卖出最大天数", null, "int", "0", "", true, false),
-                        new PropertyDescriptor(6, "sell_mainvalve", "主力线高位预警值", null, "double", "0", "", true, false),
-                        new PropertyDescriptor(7, "sell_mainvalve_diff", "主力线高位涨幅", null, "double", "0", "", true, false),                        
-                        new PropertyDescriptor(8, "sell_slopediff", "线性回归斜率差", null, "double", "60", "", true, false),
-                        new PropertyDescriptor(8, "sell_slopepoint", "线性回归斜率卖点", null, "double", "60", "", true, false),
+                        new PropertyDescriptor(4, "sell_selectdays", "择机卖出最大天数", null, "int", "0", "", true, false),
+                        new PropertyDescriptor(5, "sell_stoploss", "止损线", null, "double", "0", "", true, false),
+                        new PropertyDescriptor(6, "sell_sellpt", "卖点", null, "String", "0", "", true, false),                        
                         new PropertyDescriptor(9, "getinMode", "建仓单位资金", null, "insp.Security.Strategy.GetInMode", "3;50000.0", "", true, false),
                         new PropertyDescriptor(10, "grail", "大盘指数", null, "insp.Security.Strategy.Alpha4.GrailParameter", "0", "", true, false)
 
