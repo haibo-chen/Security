@@ -183,6 +183,10 @@ namespace insp.Utility.Date
             if (tu <= TimeUnit.day) return d;
             if (tu == TimeUnit.week)
                 return d.AddDays(7);
+            if (tu == TimeUnit.month)
+            {
+                return d.AddMonths(1);                
+            }
             throw new NotImplementedException();
         }
         
@@ -219,6 +223,8 @@ namespace insp.Utility.Date
             if (tu <= TimeUnit.day) return new DateTime[] { d, d };
             if (tu == TimeUnit.week)
                 return new DateTime[] { GetWeek(d, DayOfWeek.Monday), GetWeek(d, DayOfWeek.Sunday) };
+            if (tu == TimeUnit.month)
+                return new DateTime[] { new DateTime(d.Year, d.Month, 1), new DateTime(d.Year, d.Month == 12 ? 1 : d.Month, 1).AddDays(-1) };
             throw new NotImplementedException();
         }
         /// <summary>
@@ -232,7 +238,9 @@ namespace insp.Utility.Date
         {
             if (tu <= TimeUnit.day) return d;
             if (tu == TimeUnit.week)
-                return GetWeek(d,(sn==7? DayOfWeek.Sunday:(DayOfWeek)sn));
+                return GetWeek(d, (sn == 7 ? DayOfWeek.Sunday : (DayOfWeek)sn));
+            else if (tu == TimeUnit.month)
+                return new DateTime(d.Year,d.Month,1);
             throw new NotImplementedException();
         }
         /// <summary>

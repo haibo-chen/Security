@@ -190,7 +190,59 @@ namespace insp.Security.Import
                 MessageBox.Show("导入完成,共有" + num + "个日线完成导入");
             }
         }
+        /// <summary>
+        /// 周K
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button14_Click(object sender, EventArgs e)
+        {
+            if (repository == null)
+            {
+                repository = new IndicatorRepository(textBox2.Text);
+                repository.Initilization();
+            }
+            SecurityPropertiesSet securities = repository.Securities;
+            List<String> codes = securities.Codes;
+            int num = 0;
+            foreach (String code in codes)
+            {
+                if (code == null || code == "") continue;
+                TimeSerialsDataSet tsd = repository[code];
+                if (tsd == null || tsd.DayKLine == null || tsd.DayKLine.Count <= 0)
+                    continue;
+                showText(code + "...");
 
+                KLine weekLine = (KLine)tsd.Create("kline", TimeUnit.week, checkBox2.Checked);                
+            }
+        }
+        /// <summary>
+        /// 月k
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button13_Click(object sender, EventArgs e)
+        {
+            if (repository == null)
+            {
+                repository = new IndicatorRepository(textBox2.Text);
+                repository.Initilization();
+            }
+            SecurityPropertiesSet securities = repository.Securities;
+            List<String> codes = securities.Codes;
+            int num = 0;
+            foreach (String code in codes)
+            {
+                if (code == null || code == "") continue;
+                TimeSerialsDataSet tsd = repository[code];
+                if (tsd == null || tsd.DayKLine == null || tsd.DayKLine.Count <= 0)
+                    continue;
+                showText(code + "...");
+
+                
+                KLine monthKline = (KLine)tsd.Create("kline", TimeUnit.month, checkBox2.Checked);
+            }
+        }
         #endregion
 
         #region Alpha
@@ -238,9 +290,12 @@ namespace insp.Security.Import
                 if (tsd == null || tsd.DayKLine == null || tsd.DayKLine.Count <= 0)
                     continue;
                 showText(code + "...");
-
-                KLine weekLine = (KLine)tsd.Create("kline", TimeUnit.week, checkBox1.Checked);                                
+                tsd.CubeCreate(Utility.Collections.Time.TimeUnit.month);
+                tsd.FundTrendCreate(Utility.Collections.Time.TimeUnit.month);
+                num += 1;
             }
+            showText("");
+            MessageBox.Show("生成完成,共有" + num.ToString() + "个股票生成数据");
         }
 
         private void button8_Click(object sender, EventArgs e)

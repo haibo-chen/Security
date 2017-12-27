@@ -48,9 +48,9 @@
             this.button6 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.button11 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.button9 = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
@@ -63,7 +63,10 @@
             this.label3 = new System.Windows.Forms.Label();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.button11 = new System.Windows.Forms.Button();
+            this.button13 = new System.Windows.Forms.Button();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.button14 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -193,6 +196,9 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.button13);
+            this.tabPage2.Controls.Add(this.checkBox2);
+            this.tabPage2.Controls.Add(this.button14);
             this.tabPage2.Controls.Add(this.radioButton6);
             this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Controls.Add(this.button5);
@@ -277,10 +283,10 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.button9);
             this.tabPage3.Controls.Add(this.button11);
             this.tabPage3.Controls.Add(this.button10);
             this.tabPage3.Controls.Add(this.checkBox1);
-            this.tabPage3.Controls.Add(this.button9);
             this.tabPage3.Controls.Add(this.label6);
             this.tabPage3.Controls.Add(this.dateTimePicker2);
             this.tabPage3.Controls.Add(this.dateTimePicker1);
@@ -294,11 +300,21 @@
             this.tabPage3.Text = "Alpha";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(215, 112);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(192, 23);
+            this.button11.TabIndex = 8;
+            this.button11.Text = "统计预期盈利";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(17, 112);
+            this.button10.Location = new System.Drawing.Point(8, 112);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(192, 23);
+            this.button10.Size = new System.Drawing.Size(201, 23);
             this.button10.TabIndex = 7;
             this.button10.Text = "生成MACD";
             this.button10.UseVisualStyleBackColor = true;
@@ -307,22 +323,12 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(237, 17);
+            this.checkBox1.Location = new System.Drawing.Point(391, 18);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(72, 16);
             this.checkBox1.TabIndex = 6;
             this.checkBox1.Text = "重新创建";
             this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // button9
-            // 
-            this.button9.Location = new System.Drawing.Point(17, 11);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(192, 23);
-            this.button9.TabIndex = 5;
-            this.button9.Text = "生成周K线";
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // label6
             // 
@@ -349,9 +355,9 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(17, 69);
+            this.button8.Location = new System.Drawing.Point(8, 69);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(192, 23);
+            this.button8.Size = new System.Drawing.Size(201, 23);
             this.button8.TabIndex = 1;
             this.button8.Text = "生成特定日期买卖线和资金动向";
             this.button8.UseVisualStyleBackColor = true;
@@ -359,11 +365,11 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(17, 40);
+            this.button7.Location = new System.Drawing.Point(8, 3);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(192, 23);
+            this.button7.Size = new System.Drawing.Size(201, 23);
             this.button7.TabIndex = 0;
-            this.button7.Text = "生成所有买卖线和资金动向";
+            this.button7.Text = "生成所有买卖线和资金动向(日周)";
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
@@ -432,15 +438,45 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(131, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
-            // button11
+            // button13
             // 
-            this.button11.Location = new System.Drawing.Point(215, 112);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(192, 23);
-            this.button11.TabIndex = 8;
-            this.button11.Text = "统计预期盈利";
-            this.button11.UseVisualStyleBackColor = true;
-            this.button11.Click += new System.EventHandler(this.button11_Click);
+            this.button13.Location = new System.Drawing.Point(122, 105);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(82, 23);
+            this.button13.TabIndex = 19;
+            this.button13.Text = "生成月K线";
+            this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(216, 112);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(72, 16);
+            this.checkBox2.TabIndex = 18;
+            this.checkBox2.Text = "重新创建";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // button14
+            // 
+            this.button14.Location = new System.Drawing.Point(12, 105);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(82, 23);
+            this.button14.TabIndex = 17;
+            this.button14.Text = "生成周K线";
+            this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(8, 32);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(201, 23);
+            this.button9.TabIndex = 9;
+            this.button9.Text = "生成所有买卖线和资金动向（月）";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // Form1
             // 
@@ -502,10 +538,13 @@
         private System.Windows.Forms.DateTimePicker dateTimePicker2;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button button9;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.Button button9;
     }
 }
 
