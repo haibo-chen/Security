@@ -63,7 +63,7 @@ namespace insp.Security.Command
         /// <summary>
         /// 策略
         /// </summary>
-        private AlphaStrategy4 alpha;
+        private StrategyMeta alpha;
         /// <summary>
         /// 模版实例
         /// </summary>
@@ -155,7 +155,7 @@ namespace insp.Security.Command
             List<Task> tasks = new List<Task>();
             List<Executor> executors = new List<Executor>();
             int instanceCountPerTask = instancePropSet.Count / taskCount;
-            alpha = new AlphaStrategy4();
+            alpha = new StrategyMeta();
             List<ExecuteParam> execParams = new List<ExecuteParam>();
             for (int i= 0; i< instancePropSet.Count;i++)
             {

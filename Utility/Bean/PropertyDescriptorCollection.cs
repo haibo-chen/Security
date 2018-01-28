@@ -25,6 +25,20 @@ namespace insp.Utility.Bean
                 return;
             this.AddRange(props);
         }
+
+        public String ToString(Properties props)
+        {
+            StringBuilder str = new StringBuilder();
+            for (int i = 0; i < this.Count; i++)
+            {
+                PropertyDescriptor pd = this[i];
+                if (str.ToString() != "")
+                    str.Append(",");
+                str.Append(pd.caption+"="+(props==null?pd.Default:props.Get<String>(pd.name)));
+
+            }
+            return str.ToString();
+        }
         /// <summary>
         /// 根据名称查找
         /// </summary>
@@ -55,6 +69,7 @@ namespace insp.Utility.Bean
             return pd == null ? -1 : this.IndexOf(pd);
         }
 
+        
         public List<Property> Check(List<Property> props)
         {
             List<Property> result = new List<Property>();
@@ -74,6 +89,23 @@ namespace insp.Utility.Bean
             return result;
         }
 
+        public Properties CreateProperties(Properties props)
+        {
+
+            Properties r = new Properties();
+            if (props != null)
+                r = props.Clone();
+
+            for (int i = 0; i < this.Count; i++)
+            {
+                PropertyDescriptor pd = this[i];
+                String value = pd.DefaultValueText;
+                if (r.ContainKey(pd.Name))
+                    continue;
+                r.Put(pd.Name, pd.DefaultValueText);
+            }
+            return r;
+        }
         
     }
 }

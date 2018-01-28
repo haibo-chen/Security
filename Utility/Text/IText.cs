@@ -27,7 +27,9 @@ namespace insp.Utility.Text
         /// </summary>
         public const String FMT_PV = "{$P}={$V}";
         public const String FMT_V = "{$V}";
+        public const String FMT_CSV = "{$V}";
 
+        
         
         /// <summary>
         /// 对象转文本
@@ -36,10 +38,14 @@ namespace insp.Utility.Text
         /// <param name="format"></param>
         /// <param name="seq"></param>
         /// <returns></returns>
-        public static String ToText(this Object obj, String format = FMT_PV, String seq = ",")
+        public static String ToText(this IText obj, String format = FMT_PV,String ignoreName="", String seq = ",")
         {
             if (format == null || format == "") format = FMT_PV;
             if (seq == null || seq == "") seq = ",";
+
+            List<String> ignoreNames = new List<String>(ignoreName.Split(','));
+
+            
 
             MemberInfo[] memberInfos = obj.GetType().GetMembers(BindingFlags.Public | BindingFlags.Instance);            
 
@@ -52,8 +58,11 @@ namespace insp.Utility.Text
                 TextAttribute txtAttr = memberInfos[i].GetCustomAttribute<TextAttribute>();
                 if (txtAttr != null && txtAttr.Ignored) continue;
                 String name = memberInfos[i].Name;
+                if (ignoreNames.Contains(name)) continue;
                 if (txtAttr != null && StringUtils.NotEmpty(txtAttr.ShowText))
                     name = txtAttr.ShowText;
+                if (ignoreNames.Contains(name)) continue;
+
                 Object value = memberInfos[i].FindValue(obj);
                 String valueStr = value == null ? "" : ConvertUtils.ConvertTo<String>(value, txtAttr != null ? txtAttr.Format : "");
                 String text = format;

@@ -140,6 +140,18 @@ namespace insp.Utility.Bean
         public bool Required { get { return required; } set { required = value; } }
 
         /// <summary>
+        /// 取值范围
+        /// </summary>
+        protected String rangeText = "";
+        /// <summary>
+        /// 取值范围
+        /// </summary>
+        [XmlAttribute]
+        public String Range { get { return rangeText; } set { rangeText = value; } }
+
+        
+
+        /// <summary>
         /// 构造方法
         /// </summary>
         public PropertyDescriptor() { }
@@ -166,6 +178,30 @@ namespace insp.Utility.Bean
             this.defaultValue = defaultValue;
             this.format = format;
             this.primary = primary;
+        }
+
+        public bool GetRange<T>(out T min, out T max)
+        {
+            min = default(T);
+            max = default(T);
+
+            if (rangeText == null || rangeText == "")
+                return false;
+            if (!rangeText.Contains("-"))
+                return false;
+            String[] ss = rangeText.Split('-');
+            if (ss == null || ss.Length <= 0)
+                return false;
+
+            if(ss[0] != null && ss[0].Trim() != "")
+            {
+                min = ConvertUtils.ConvertTo<T>(ss[0].Trim());
+            }
+            if(ss[1] != null && ss[1].Trim() != "")
+            {
+                max = ConvertUtils.ConvertTo<T>(ss[1].Trim());
+            }
+            return true;
         }
         #endregion
 

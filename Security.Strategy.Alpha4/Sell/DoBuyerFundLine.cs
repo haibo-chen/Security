@@ -15,7 +15,12 @@ namespace insp.Security.Strategy.Alpha.Sell
     /// </summary>
     public class DoBuyerFundLine : Buyer
     {
-        public override List<TradeBout> Execute(string code, Properties strategyParam, BacktestParameter backtestParam, ISeller seller = null)
+        public override List<TradeInfo> DoBuy(Properties strategyParams, DateTime d, StrategyContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override TradeRecords Execute(string code, Properties strategyParam, BacktestParameter backtestParam, ISeller seller = null)
         {
             IndicatorRepository repository = (IndicatorRepository)backtestParam.Get<Object>("repository");
             //取得策略参数
@@ -24,7 +29,7 @@ namespace insp.Security.Strategy.Alpha.Sell
             GetInMode p_getinMode = (GetInMode)strategyParam.Get<GetInMode>("getinMode");
 
 
-            List<TradeBout> bouts = new List<TradeBout>();
+            TradeRecords tr = new TradeRecords(code);
             TimeSerialsDataSet ds = repository[code];
             if (ds == null) return null;
 
@@ -70,7 +75,7 @@ namespace insp.Security.Strategy.Alpha.Sell
                         if (price > klineItemNext.HIGH || price < klineItemNext.LOW)
                             break;
                         bout.RecordTrade(1, dayFunds[i].Date.Date, TradeDirection.Buy, price, (int)(p_getinMode.Value / price), backtestParam.Volumecommission, backtestParam.Stampduty, "主力线低于" + buy_mainlow.ToString("F2"));
-                        bouts.Add(bout);
+                        tr.Bouts.Add(bout);
                         break;
                     }
                 }
@@ -100,12 +105,12 @@ namespace insp.Security.Strategy.Alpha.Sell
                     if (price > klineItemNext.HIGH || price < klineItemNext.LOW)
                         continue;
                     bout.RecordTrade(1, dayFunds[i].Date.Date, TradeDirection.Buy, price, (int)(p_getinMode.Value / price), backtestParam.Volumecommission, backtestParam.Stampduty, "主力线低于" + buy_mainlow.ToString("F2"));
-                    bouts.Add(bout);
+                    tr.Bouts.Add(bout);
                 }
             }
             #endregion
 
-            return bouts;
+            return tr;
         }
     }
 }

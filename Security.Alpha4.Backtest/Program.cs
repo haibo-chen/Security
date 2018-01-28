@@ -24,7 +24,7 @@ namespace insp.Security.Alpha4.Backtest
 {
     class Program
     {
-        static AlphaStrategy4 alpha;
+        static Strategy4 alpha;
         static ILog logger = LogManager.GetLogger("main");
         static String backtestxh;
         static Properties backtestProps;

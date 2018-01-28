@@ -44,24 +44,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlphaCodeStatus.cs" />
-    <Compile Include="AlphaStrategy4.cs" />
-    <Compile Include="AlphaStrategy401Instance.cs" />
-    <Compile Include="AlphaStrategy5.cs" />
-    <Compile Include="AlphaStrategy5Instance.cs" />
-    <Compile Include="AlphaStrategy7.cs" />
-    <Compile Include="AlphaStrategy6.cs" />
-    <Compile Include="AlphaStrategy601Instance.cs" />
-    <Compile Include="AlphaStrategy7Instance.cs" />
     <Compile Include="GrailParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sell\DoBuyB.cs" />
+    <Compile Include="Sell\DoBuyerAlpha1.cs" />
+    <Compile Include="Sell\DoBuyerFundComposite.cs" />
     <Compile Include="Sell\DoBuyerDayCrossWeekBias.cs" />
     <Compile Include="Sell\DoBuyerFundLine.cs" />
-    <Compile Include="Sell\DoBuyerFundMainforce.cs" />
     <Compile Include="Sell\DoBuyerMACDCross.cs" />
-    <Compile Include="Sell\DoSellerMaxProfilt.cs" />
-    <Compile Include="Sell\DoSellerS.cs" />
+    <Compile Include="Sell\DoBuyBest.cs" />
+    <Compile Include="Sell\DoSellAlpha1.cs" />
+    <Compile Include="Sell\DoSellerComposite.cs" />
     <Compile Include="Sell\DoSellerSense.cs" />
-    <Compile Include="Sell\DoSellerStage.cs" />
+    <Compile Include="Sell\DoSellMaxProfilt.cs" />
+    <Compile Include="Sell\DoSellS.cs" />
     <Compile Include="StrategyDataSet.cs" />
   </ItemGroup>
   <ItemGroup>

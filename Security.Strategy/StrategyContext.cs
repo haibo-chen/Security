@@ -9,6 +9,7 @@ using insp.Utility.Bean;
 using insp.Utility.IO;
 using insp.Utility.Collections;
 using insp.Security.Data;
+using insp.Security.Strategy.Evolution;
 
 namespace insp.Security.Strategy
 {
@@ -176,6 +177,22 @@ namespace insp.Security.Strategy
             KeyValuePair<IStrategyMeta, Properties> kv = new KeyValuePair<IStrategyMeta, Properties>();
             IStrategyMeta meta = GetStrategyMeta(name);
             Properties props = GetStrategyParam(name);
+            if (props == null) props = new Properties();
+
+            String buyerName = props.Get<String>("buyer","");
+            Buyer buyer = (Buyer)this.GetBuyer(buyerName);
+            if(buyer != null)
+            {
+                props = buyer.PDC.CreateProperties(props);
+            }
+
+            String sellerName = props.Get<String>("seller", "");
+            Seller seller = (Seller)this.GetSeller(sellerName);
+            if (seller != null)
+            {
+                props = seller.PDC.CreateProperties(props);
+            }
+
             return new KeyValuePair<IStrategyMeta, Properties>(meta, props);
         }
         #endregion
@@ -209,6 +226,12 @@ namespace insp.Security.Strategy
             IStrategyInstance instance = meta.CreateInstance("1",props,version);
             if (instance == null)
                 return;
+
+            if(backtestParam.Optimization != null && backtestParam.Optimization.ToLower().Contains("ga"))
+            {
+                new EvolutionComputer(backtestParam.Optimization).Start(this);
+                return;
+            }
 
             List<Properties> instanceParamSet = spiltStrategyParams(props);
 

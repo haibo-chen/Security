@@ -23,7 +23,7 @@ namespace insp.Utility.Text
             if (str == null || str == "") return str;
             int bpos = str.IndexOf(beginStr, begin);
             if (bpos < 0) return null;
-            int epos = str.IndexOf(endStr, bpos);
+            int epos = str.IndexOf(endStr, bpos+1);
             if (epos < 0) return null;
 
             return str.Substring(bpos + beginStr.Length, epos - bpos - beginStr.Length);

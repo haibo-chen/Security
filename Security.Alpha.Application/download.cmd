@@ -34,7 +34,6 @@ $win1 = 打开通达信[D:\Program Files (x86)\new_tdx\TdxW.exe] max
 点击[890,533]   #点击”关闭“
 关闭$win1
 
-合并日线
 
 
 

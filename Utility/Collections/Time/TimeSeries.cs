@@ -422,7 +422,24 @@ namespace insp.Utility.Collections.Time
             }
             return -1;
         }
-        
+        public int IndexOf(DateTime time,bool backward)
+        {
+            for (int i = 0; i < this.Count; i++)
+            {
+                if (this[i].Date == time)
+                    return i;
+                if (this[i].Date > time)
+                {
+                    if (backward)
+                        return i;
+                    else
+                        return i - 1;
+                }
+                
+            }
+            return -1;
+        }
+
         /// <summary>
         /// 取得最近时间的数据（d之前）
         /// </summary>

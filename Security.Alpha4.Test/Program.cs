@@ -31,7 +31,7 @@ namespace Security.Alpha4.Test
             StrategyContext context = new StrategyContext();
             context.DoTest();
 
-
+            Console.Read();
             /*StrategyFactory factory = new StrategyFactory();
             factory.Put(new AlphaStrategy5())
                    .Put(new AlphaStrategy6())

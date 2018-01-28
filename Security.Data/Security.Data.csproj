@@ -67,9 +67,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Meta\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Utility\Utility.csproj">
       <Project>{2283784a-04e5-4e13-b147-40ee6d829304}</Project>

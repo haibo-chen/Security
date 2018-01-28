@@ -15,21 +15,22 @@ namespace insp.Security.Strategy
         public DateTime date;
         /// <summary>资金</summary>             
         public double curFund;
+        
         /// <summary>最小市值</summary>             
         public double marketValueMin;
         /// <summary>最大市值</summary>             
         public double marketValueMax;
         /// <summary>可买数目</summary>             
         public int willBuyCount;
-        /// <summary>实际买入数</summary>             
-        public int buyCount;
-        /// <summary>卖出数量</summary>             
-        public int SellCount;
+        /// <summary>实际委托买入数</summary>             
+        public int buyCount;        
+        /// <summary>委托卖出数量</summary>             
+        public int SellCount;        
         /// <summary>持仓数量</summary>             
         public int holdCount;
         /// <summary>回撤率</summary>             
         public double retracement;
-
+        
         /// <summary>
         /// 取得标题
         /// </summary>
@@ -50,7 +51,7 @@ namespace insp.Security.Strategy
                    marketValueMax.ToString("F2") + "," +
                    willBuyCount.ToString() + "," +
                    buyCount.ToString() + "," +
-                   SellCount.ToString() + "," +
+                   SellCount.ToString() + "," +                  
                    holdCount.ToString() + "," +
                    retracement.ToString();
         }
@@ -62,15 +63,15 @@ namespace insp.Security.Strategy
         {
             DateDetailRecord r = new DateDetailRecord();
             r.buyBouts.AddRange(this.buyBouts);
-            r.buyCount = this.buyCount;
-            r.curFund = this.curFund;
+            r.buyCount = this.buyCount;           
+            r.curFund = this.curFund;         
             r.date = this.date;
             r.holdBouts.AddRange(this.holdBouts);
             r.marketValueMax = marketValueMax;
             r.marketValueMin = marketValueMin;
             r.retracement = retracement;
             r.sellBouts.AddRange(this.sellBouts);
-            r.SellCount = SellCount;
+            r.SellCount = SellCount;          
             r.willBuyCount = willBuyCount;
             return r;
         }
@@ -96,11 +97,16 @@ namespace insp.Security.Strategy
         public List<String> ToDetailString()
         {
             List<String> str = new List<string>();
-            buyBouts.ForEach(x => str.Add(date.ToString("yyyyMMdd") + ",买入," + x.ToText()));
-            sellBouts.ForEach(x => str.Add(date.ToString("yyyyMMdd") + ",卖出," + x.ToText()));
+            buyBouts.ForEach(x => str.Add(date.ToString("yyyyMMdd") + ",委托买入," + x.ToText()));
+            sellBouts.ForEach(x => str.Add(date.ToString("yyyyMMdd") + ",委托卖出," + x.ToText()));
             holdBouts.ForEach(x => str.Add(date.ToString("yyyyMMdd") + ",持仓," + x));
             return str;
         }
         #endregion
+    }
+
+    public class DateDetailRecordCollection : List<DateDetailRecord>
+    {
+
     }
 }

@@ -199,7 +199,7 @@ namespace insp.Security.Strategy
                 throw new Exception("回测启动失败：找不到卖出算法实现:" + props.Get<String>("seller"));
             log.Info("买入算法=" + buyer.Caption + ",卖出算法=" + seller.Caption);
 
-            List<TradeBout> bouts = doTestByCodes(codes);
+            List<TradeRecords> bouts = doTestByCodes(codes);
             TotalStat totalStat = doTestByDate(bouts);
 
             if (totalStat != null)
@@ -257,10 +257,10 @@ namespace insp.Security.Strategy
         /// </summary>
         /// <param name="codes"></param>
         /// <returns></returns>
-        protected virtual List<TradeBout> doTestByCodes(List<String> codes)
+        protected virtual List<TradeRecords> doTestByCodes(List<String> codes)
         {
             if (codes == null || codes.Count <= 0)
-                return new List<TradeBout>();
+                return new List<TradeRecords>();
 
             IndicatorRepository repository = (IndicatorRepository)backtestParam.Get<Object>("repository");
             if (repository == null) return null;
@@ -268,7 +268,7 @@ namespace insp.Security.Strategy
             if (buyer == null || Seller == null)
                 throw new Exception("买卖策略对象无效");
 
-            List<TradeBout> allbouts = new List<TradeBout>();
+            List<TradeRecords> allTrades = new List<TradeRecords>();
 
             
 
@@ -277,37 +277,29 @@ namespace insp.Security.Strategy
                 TimeSerialsDataSet ds = repository[code];
                 if (ds == null) continue;
 
-                List<TradeBout> bouts = buyer.Execute(code, props, backtestParam);
-                if (bouts == null || bouts.Count <= 0)
+                TradeRecords tr = buyer.Execute(code, props, backtestParam);
+                if (tr == null || tr.Bouts.Count <= 0)
                     continue;
 
-                seller.Execute(bouts, props, backtestParam);
+                
+                seller.Execute(tr, props, backtestParam);
 
                 //最后删除未完成的回合
-                RemoveUnCompeletedBouts(bouts);
-                if (bouts != null && bouts.Count > 0)
-                    allbouts.AddRange(bouts);
-
-                ///打印
-                if (bouts != null && bouts.Count > 0)
+                tr.RemoveUnCompeletedBouts();               
+                if (tr.Bouts.Count > 0)
                 {
-                    double totalProfilt = allbouts.Sum(x => x.Profit);
-                    double totalCost = allbouts.Sum(x => x.BuyInfo.TradeCost);
-                    log.Info(ds.Code + ":回合数=" + bouts.Count.ToString() +
-                                       ",胜率=" + (bouts.Count(x => x.Win) * 1.0 / bouts.Count).ToString("F2") +
-                                       ",盈利=" + bouts.Sum(x => x.Profit).ToString("F2") +
-                                       ",总胜率=" + (allbouts.Count(x => x.Win) * 1.0 / allbouts.Count).ToString("F3") +
-                                       ",总盈利=" + totalProfilt.ToString("F2") +
-                                       ",平均盈利率=" + (totalProfilt / totalCost).ToString("F3"));
-
-                    /*foreach(TradeBout bout in bouts)
-                    {
-                        log.Info("  " + bout.ToString());
-                    }*/
+                    allTrades.Add(tr);
+                    tr.Print(log, true);
+                    //tr.Print(log,backtestParam.Get<bool>("printdetailed",false));
+                    log.Info("总回合数=" + allTrades.Sum(x => x.Bouts.Count).ToString() + "," +
+                             "总胜率=" + (allTrades.Sum(x => x.WinCount) * 1.0 / allTrades.Sum(x => x.Bouts.Count)).ToString("F3"));
 
                 }
+                    
+
+                
             }
-            return allbouts;
+            return allTrades;
         }
         /// <summary>
         /// 特定日期禁止买入
@@ -328,8 +320,11 @@ namespace insp.Security.Strategy
         /// </summary>
         /// <param name="props"></param>
         /// <returns></returns>
-        public virtual TotalStat doTestByDate(List<TradeBout> bouts)
+        public virtual TotalStat doTestByDate(List<TradeRecords> tradeRecoreds)
         {
+            List<TradeBout> bouts = new List<TradeBout>();
+            tradeRecoreds.ForEach(x => bouts.AddRange(x.Bouts));
+
             double marketValueMin = backtestParam.Initfunds;//日最低市值
             double marketValueMax = backtestParam.Initfunds;//日最高市值
             double lastmarketValueMax = backtestParam.Initfunds;//上一个日最高市值
@@ -519,20 +514,7 @@ namespace insp.Security.Strategy
             return stat;
 
         }
-        /// <summary>
-        /// 删除未完成的测试回合
-        /// </summary>
-        /// <param name="bouts"></param>
-        protected void RemoveUnCompeletedBouts(List<TradeBout> bouts)
-        {
-            if (bouts == null) return;
-            for (int i = 0; i < bouts.Count; i++)
-            {
-                if (bouts[i].Completed)
-                    continue;
-                bouts.RemoveAt(i--);
-            }
-        }
+        
         #endregion
 
         #region 执行

@@ -32,12 +32,14 @@ namespace insp.Security.Trade
         public readonly String code;
         public readonly double amount;
         public readonly double price;
+        public readonly String reason;
         
-        public EntrustRequest(String code, double amount, double price)
+        public EntrustRequest(String code, double amount, double price,String reason="")
         {
             this.code = code;
             this.amount = amount;
             this.price = price;
+            this.reason = reason;
         }
         
 

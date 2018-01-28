@@ -13,7 +13,12 @@ namespace insp.Security.Strategy.Alpha.Sell
 {
     public class DoBuyerMACDCross : Buyer
     {
-        public override List<TradeBout> Execute(String code,Properties strategyParam, BacktestParameter backtestParam,ISeller seller = null)
+        public override List<TradeInfo> DoBuy(Properties strategyParams, DateTime d, StrategyContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override TradeRecords Execute(String code,Properties strategyParam, BacktestParameter backtestParam,ISeller seller = null)
         {
             IndicatorRepository repository = (IndicatorRepository)backtestParam.Get<Object>("repository");
             if (repository == null) return null;
@@ -23,7 +28,7 @@ namespace insp.Security.Strategy.Alpha.Sell
             GetInMode p_getinMode = (GetInMode)strategyParam.Get<GetInMode>("getinMode");
 
             //取得行情数据
-            List<TradeBout> bouts = new List<TradeBout>();
+            TradeRecords tr = new TradeRecords(code);
             TimeSerialsDataSet ds = repository[code];
             if (ds == null) return null;
 
@@ -51,10 +56,10 @@ namespace insp.Security.Strategy.Alpha.Sell
                 if (klineItem == null) continue;
                 TradeBout bout = new TradeBout(code);
                 bout.RecordTrade(1, d, TradeDirection.Buy, klineItem.CLOSE, (int)(p_getinMode.Value / klineItem.CLOSE), backtestParam.Volumecommission, backtestParam.Stampduty, "低位金叉" + macdItem.DIF.ToString("F2"));
-                bouts.Add(bout);
+                tr.Bouts.Add(bout);
 
             }
-            return bouts;
+            return tr;
 
         }
     }

@@ -81,6 +81,7 @@
     <Compile Include="Date\CalendarUtils.cs" />
     <Compile Include="Date\DateSection.cs" />
     <Compile Include="Date\DateUtils.cs" />
+    <Compile Include="IO\CSVFile.cs" />
     <Compile Include="IO\FileUtils.cs" />
     <Compile Include="Log\Logger.cs" />
     <Compile Include="Log\LogUtils.cs" />

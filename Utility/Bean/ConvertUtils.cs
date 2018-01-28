@@ -155,6 +155,7 @@ namespace insp.Utility.Bean
         /// <returns></returns>
         public static Tout ConvertTo<Tin,Tout>(this Tin src,String format="", Properties context = null)
         {
+            
             if (typeof(Tin) == typeof(Tout))
                 return (Tout)(Object)src;
             if (typeof(Tout) == typeof(Object))
@@ -171,7 +172,7 @@ namespace insp.Utility.Bean
             {
                 if (typeof(Tin).GetMethod("ToString").DeclaringType == typeof(Tin))
                     return (Tout)(Object)src.ToString();//如果源类型实现了ToString，则直接调用
-                
+
                 return (Tout)(Object)objectToStr(src, format, context);
             }
             else if (typeof(Tin) == typeof(String))
@@ -180,8 +181,23 @@ namespace insp.Utility.Bean
                 if (method != null)//如果目标类型实现静态方法Ｐａｒｓｅ，则直接调用　
                     return (Tout)method.Invoke(null, new Object[] { src });
                 return (Tout)strToObject(src.ToString(), typeof(Tout), format, context);
+            } 
+            else if(typeof(Tout) == typeof(int))
+            {
+                return (Tout)(Object)strToInt(src == null ? "0" : src.ToString(), format, context);
             }
-            
+            else if (typeof(Tout) == typeof(double) || typeof(Tout) == typeof(float))
+            {
+                return (Tout)(Object)strTodouble(src == null ? "0" : src.ToString(), format, context);
+            }
+            else if (typeof(Tout) == typeof(DateTime))
+            {                
+                return (Tout)(Object)strToDatetime(src == null ? "" : src.ToString(), format, context);
+            }else if(typeof(Tout).IsEnum)
+            {
+                return (Tout)(Object)strtoenum<Tout>(src == null ? "" : src.ToString(), format, context);
+            }
+
             throw new NotImplementedException();
         }
 
@@ -505,7 +521,7 @@ namespace insp.Utility.Bean
             else if (destType == typeof(int) || destType == typeof(Int32))
                 return (Object)strToInt(x, format, props);
             else if (destType == typeof(float) || destType == typeof(double))
-                return (Object)strTodouble(x, format, props);
+                return (Object)strTodouble(x, format, props);            
             else if (destType == typeof(String))
                 return (Object)x;
             else if (destType == typeof(DateTime))
@@ -546,6 +562,12 @@ namespace insp.Utility.Bean
                 return (Object)list;
             }
 
+            Object obj = destType.Assembly.CreateInstance(destType.FullName);
+            MethodInfo parseMethod = destType.GetMethod("Parse",new Type[] { typeof(String),typeof(String),typeof(Properties)});
+            if (parseMethod != null && parseMethod.IsStatic)
+                return parseMethod.Invoke(obj, new Object[] { x,format,props });
+
+            
             if (props == null) props = new Properties();
             String sep = props.Get<String>(TEXT_PROP_SEP, ",");
             if (format == null || format == "")
@@ -553,14 +575,11 @@ namespace insp.Utility.Bean
             String propNames = props.Get<String>(TEXT_PROP_PROPNAMES, "");
 
             PropertyInfo[] memberInfos = destType.GetProperties();
-
             List<PropertyInfo> members = new List<PropertyInfo>(memberInfos);
 
             String[] ss = x.Split(sep.ToCharArray());
             if (ss == null || ss.Length <= 0) return null;
-            Object obj = destType.Assembly.CreateInstance(destType.FullName);
-
-
+ 
             for (int i = 0; i < ss.Length; i++)
             {
                 if (ss[i] == null) ss[i] = "";
@@ -573,7 +592,6 @@ namespace insp.Utility.Bean
                 }
                 PropertyInfo member = members.FirstOrDefault(m => m.HasName(ttStr));
                 if (member == null) member = members[i];
-
 
                 Object value = ConvertTo(ss[i], member.PropertyType);
                 if (member.GetSetMethod() != null)

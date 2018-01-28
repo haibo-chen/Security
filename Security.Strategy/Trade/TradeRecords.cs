@@ -13,6 +13,9 @@ namespace insp.Security.Strategy
     public class TradeRecords : IListOperator
     {
         #region 回合信息
+        private String code;
+
+        public String Code { get { return code; } set { code = value; } }
         /// <summary>
         /// 回合
         /// </summary>
@@ -22,6 +25,53 @@ namespace insp.Security.Strategy
         /// </summary>
         public List<TradeBout> Bouts { get { return bouts; } }
 
+        public TradeRecords() { }
+        public TradeRecords(String code){ this.code = code; }
+        public TradeRecords(String code, List<TradeBout> bouts)
+        {
+            this.code = code;
+            this.bouts = bouts;
+        }
+
+        /// <summary>
+        /// 删除未完成的测试回合
+        /// </summary>
+        /// <param name="bouts"></param>
+        public void RemoveUnCompeletedBouts()
+        {
+            if (bouts == null) return;
+            for (int i = 0; i < bouts.Count; i++)
+            {
+                if (bouts[i].Completed)
+                    continue;
+                bouts.RemoveAt(i--);
+            }
+        }
+
+        public void Print(log4net.ILog log,bool detailed = false)
+        {
+            if (bouts != null && bouts.Count > 0)
+            {
+                if(detailed)
+                {
+                    foreach (TradeBout bout in bouts)
+                    {
+                        log.Info("  " + bout.ToString());
+                    }
+                }
+                
+
+                double totalProfilt = bouts.Sum(x => x.Profit);
+                double totalCost = bouts.Sum(x => x.BuyInfo.TradeCost);
+                log.Info(Code + ":回合数=" + bouts.Count.ToString() +
+                                   ",胜率=" + (bouts.Count(x => x.Win) * 1.0 / bouts.Count).ToString("F2") +
+                                   ",盈利=" + bouts.Sum(x => x.Profit).ToString("F2") +                                   
+                                   ",平均盈利率=" + (totalProfilt / totalCost).ToString("F3"));
+
+                
+
+            }
+        }
         #endregion
 
         #region 读取

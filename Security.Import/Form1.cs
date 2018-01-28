@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 
+using insp.Utility.Text;
 using insp.Security.Import.Info;
 using insp.Security.Data;
 using insp.Security.Data.Security;
@@ -400,6 +401,196 @@ namespace insp.Security.Import
             Application.DoEvents();
         }
 
-        
+        #region 测试
+        private void button12_Click(object sender, EventArgs e)
+        {
+            String code = textBox4.Text;
+            DateTime begin = dateTimePicker3.Value;
+            DateTime end = dateTimePicker4.Value;
+            int days = int.Parse(textBox5.Text);
+
+            if (repository == null)
+            {
+                repository = new IndicatorRepository(textBox2.Text);
+                repository.Initilization();
+            }
+
+            TimeSerialsDataSet ds = repository[code];
+            if(ds == null || ds.DayKLine == null)
+            {
+                MessageBox.Show("代码"+code+"缺少K线数据");
+            }
+
+            KLine klineDay = ds.DayKLine;
+            KLineItem item = null;
+
+            List<double[]> datas = new List<double[]>();
+            for(int i=0;i<klineDay.Count;i++)
+            {
+                item = klineDay[i];
+                if (item.Date < begin) continue;
+                if (item.Date > end) break;
+
+                double maxprofilt = -100;
+                for(int j=i+1;j<=i+1+days;j++)
+                {
+                    if (j >= klineDay.Count) break;
+                    double p = (klineDay[j].CLOSE - item.CLOSE) / item.CLOSE;
+                    if (maxprofilt < p)
+                        maxprofilt = p;
+                }
+                if (maxprofilt == -100) continue;
+                double[] values = new double[2];
+                values[0] = item.CLOSE;
+                values[1] = maxprofilt;
+                datas.Add(values);
+            }
+
+            if(datas.Count<=0)
+            {
+                MessageBox.Show("没有有效数据");
+                return;
+            }
+            String[] lines = datas.ConvertAll(x => x[0].ToString("F2") + "," + x[1].ToString("F3")).ToArray();
+            File.WriteAllLines("d:\\" + code + ".csv", lines);
+
+        }
+        #endregion
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            if (dlg.ShowDialog() != DialogResult.OK)
+                return;
+            textBox7.Text = dlg.FileName;
+
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            createTrainTestData();
+
+
+
+        }
+        private void createTrainTestData()
+        {
+            if (repository == null)
+            {
+                repository = new IndicatorRepository(textBox2.Text);
+                repository.Initilization();
+            }
+
+            String filename = textBox7.Text;
+            FileInfo fInfo = new FileInfo(filename);
+
+
+            String[] lines = File.ReadAllLines(filename);
+            for(int i=0;i<lines.Length;i++)
+            {
+                if (lines[i] == null || lines[i].Trim() == "") continue;
+
+                int index = lines[i].IndexOf("\"");
+                if (index < 0) continue;
+                index = lines[i].IndexOf("\"",index+1);
+                if (index < 0) continue;
+                index = lines[i].IndexOf("\"", index + 1);
+                if (index < 0) continue;
+
+                String label = lines[i].substring(index - 1, "\"","\"");
+                //"[-6.4500000000000002, '2007-05-17', 6]"
+                String[] ss = label.Split(',');
+                if (ss == null || ss.Length < 3) continue;
+                String sDate = ss[1].Trim().Substring(1,10);
+                String code = ss[2].Substring(0, ss[2].Length - 2).Trim();
+                int len = code.Length;
+                for (int j = 0; j < 6 - len; j++)
+                    code = "0" + code;
+                    
+                DateTime d = DateTime.ParseExact(sDate, "yyyy-MM-dd", null);
+
+                TimeSerialsDataSet ds = repository[code];
+                if(ds == null)
+                {
+                    lines[i] = lines[i].Substring(0, index) + "\"[0.0,'" + sDate + "'," + code + "]\"";
+                    continue;
+                }
+
+                KLine kline = ds.DayKLine;
+                KLineItem item = kline[d];
+                if(item == null)
+                {
+                    lines[i] = lines[i].Substring(0, index) + "\"[0.0,'" + sDate + "'," + code + "]\"";
+                    continue;
+                }
+                double maxprofilt = -100;
+                int itemIndex = kline.IndexOf(item);
+                for(int k=itemIndex+1;k< itemIndex + 5; k++)
+                {
+                    if (k >= kline.Count) break;
+                    double p = (kline[k].CLOSE - item.CLOSE) / item.CLOSE;
+                    if (maxprofilt < p) maxprofilt = p;
+                }
+                if(maxprofilt == -100)
+                {
+                    lines[i] = lines[i].Substring(0, index) + "\"[0.0,'" + sDate + "'," + code + "]\"";
+                    continue;
+                }
+                lines[i] = lines[i].Substring(0, index) + "\"[" + maxprofilt.ToString("F3") + ",'" + sDate + "'," + code + "]\"";
+            }
+
+            File.WriteAllLines(filename+"2",lines);
+        }
+        private void createOrginData()
+        {
+            String filename = textBox7.Text;
+            FileInfo fInfo = new FileInfo(filename);
+
+
+            String[] lines = File.ReadAllLines(filename);
+            List<Object[]> datas = new List<object[]>();
+            for (int i = 1; i < lines.Length; i++)
+            {
+                if (lines[i] == null || lines[i].Trim() == "") continue;
+                String[] ss = lines[i].Split(',');
+                Object[] d = new Object[]
+                {
+                    i,ss[0],ss[1],
+                    double.Parse(ss[2]),double.Parse(ss[3]),double.Parse(ss[4]),
+                    double.Parse(ss[5]),double.Parse(ss[6]),double.Parse(ss[7]),
+                    double.Parse(ss[8]),double.Parse(ss[9])
+                };
+                datas.Add(d);
+            }
+
+            datas.Sort((xx, yy) =>
+            {
+                if (((String)xx[1]).CompareTo((String)yy[1]) == 0)
+                    return ((String)xx[2]).CompareTo((String)yy[2]);
+                return ((String)xx[1]).CompareTo((String)yy[1]);
+            });
+
+            for (int i = 0; i < datas.Count; i++)
+            {
+                double mp = -100;
+                for (int j = i + 1; j < i + 6; j++)
+                {
+                    if (j >= datas.Count) break;
+                    if (((String)datas[i][1]) != ((String)datas[j][1])) break;
+
+                    double p = ((double)datas[j][4] - (double)datas[i][4]) / (double)datas[i][4];
+                    if (p > mp) mp = p;
+                }
+
+                if (mp == -100)
+                    lines[(int)datas[i][0]] += ",0";
+                else
+                    lines[(int)datas[i][0]] += "," + mp.ToString("F3");
+            }
+
+            lines[0] += ",gate";
+
+            File.WriteAllLines(fInfo.FullName + "2", lines.ToArray());
+        }
     }
 }

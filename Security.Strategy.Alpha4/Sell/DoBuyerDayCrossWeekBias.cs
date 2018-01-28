@@ -17,7 +17,12 @@ namespace insp.Security.Strategy.Alpha.Sell
     /// </summary>
     public class DoBuyerCrossOrBias : Buyer
     {
-        public override List<TradeBout> Execute(string code, Properties strategyParam, BacktestParameter backtestParam, ISeller seller = null)
+        public override List<TradeInfo> DoBuy(Properties strategyParams, DateTime d, StrategyContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override TradeRecords Execute(string code, Properties strategyParam, BacktestParameter backtestParam, ISeller seller = null)
         {
             IndicatorRepository repository = (IndicatorRepository)backtestParam.Get<Object>("repository");
             if (repository == null) return null;
@@ -31,6 +36,8 @@ namespace insp.Security.Strategy.Alpha.Sell
             return mode.DoBuy(ds, strategyParam, backtestParam);
         }
 
+       
+
         #region 不同的买入模式
 
         internal abstract class Mode
@@ -43,11 +50,11 @@ namespace insp.Security.Strategy.Alpha.Sell
             }
 
 
-            public abstract List<TradeBout> DoBuy(TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam);
+            public abstract TradeRecords DoBuy(TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam);
 
-            public virtual void DoSell(List<TradeBout> bouts, TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
+            public virtual void DoSell(TradeRecords tradeRecords, TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
             {
-                DoSell1(bouts, ds, strategyParam, backtestParam);
+                DoSell1(tradeRecords, ds, strategyParam, backtestParam);
             }
             /// <summary>
             /// 根据个股主力线高位卖出
@@ -56,15 +63,15 @@ namespace insp.Security.Strategy.Alpha.Sell
             /// <param name="ds"></param>
             /// <param name="strategyParam"></param>
             /// <param name="backtestParam"></param>
-            public void DoSell2(List<TradeBout> bouts, TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
+            public void DoSell2(TradeRecords tradeRecords, TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
             {
-                if (bouts == null || bouts.Count <= 0)
+                if (tradeRecords == null || tradeRecords.Bouts == null || tradeRecords.Bouts.Count <= 0)
                     return;
                 TimeSeries<ITimeSeriesItem<List<double>>> dayFunds = ds.DayFundTrend;
                 KLine dayLine = ds.DayKLine;
                 if (dayLine == null) return;
 
-                foreach (TradeBout bout in bouts)
+                foreach (TradeBout bout in tradeRecords.Bouts)
                 {
                     DateTime buyDate = bout.BuyInfo.TradeDate;
                     //找20个工作日的收盘价最高值
@@ -92,17 +99,17 @@ namespace insp.Security.Strategy.Alpha.Sell
             /// <param name="ds"></param>
             /// <param name="strategyParam"></param>
             /// <param name="backtestParam"></param>
-            public void DoSell1(List<TradeBout> bouts, TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
+            public void DoSell1(TradeRecords tradeRecords, TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
             {
                 TimeSeries<ITimeSeriesItem<char>> dayTradePt = ds.CubePtCreateOrLoad();
                 if (dayTradePt == null)
                     return;
-                if (bouts == null || bouts.Count <= 0)
+                if (tradeRecords == null || tradeRecords.Bouts == null || tradeRecords.Bouts.Count <= 0)
                     return;
                 KLine dayLine = ds.DayKLine;
                 if (dayLine == null)
                     return;
-                foreach (TradeBout bout in bouts)
+                foreach (TradeBout bout in tradeRecords.Bouts)
                 {
                     DateTime buyDate = bout.BuyInfo.TradeDate;
                     KeyValuePair<int, ITimeSeriesItem> dayTradePtItem = dayTradePt.GetNearest(buyDate, false);
@@ -128,7 +135,7 @@ namespace insp.Security.Strategy.Alpha.Sell
         {
             public override String Name { get { return "日线金叉;周线偏离"; } }
 
-            public override List<TradeBout> DoBuy(TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
+            public override TradeRecords DoBuy(TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
             {
                 TimeSeries<ITimeSeriesItem<List<double>>> dayFunds = ds.FundTrendCreateOrLoad(TimeUnit.day);
                 TimeSeries<ITimeSeriesItem<List<double>>> weekFunds = ds.FundTrendCreateOrLoad(TimeUnit.week);
@@ -138,7 +145,7 @@ namespace insp.Security.Strategy.Alpha.Sell
                 if (dayFunds == null || dayFunds.Count <= 0 || weekFunds == null || weekFunds.Count <= 0 || dayCross == null || dayCross.Count <= 0 || weedCross == null || weedCross.Count <= 0)
                     return null;
 
-                List<TradeBout> bouts = new List<TradeBout>();
+                TradeRecords tr = new TradeRecords(ds.Code);
                 DateTime begin = backtestParam.BeginDate;
                 DateTime end = backtestParam.EndDate;
                 double p_day_low = strategyParam.Get<double>("day_low");
@@ -171,9 +178,9 @@ namespace insp.Security.Strategy.Alpha.Sell
 
                     TradeBout bout = new TradeBout(ds.Code);
                     bout.RecordTrade(1, dayCrossItem.Date, TradeDirection.Buy, dayLineItem.CLOSE, (int)(p_getinMode.Value / dayLineItem.CLOSE), 0, 0, Name);
-                    bouts.Add(bout);
+                    tr.Bouts.Add(bout);
                 }
-                return bouts;
+                return tr;
             }
 
 
@@ -183,7 +190,7 @@ namespace insp.Security.Strategy.Alpha.Sell
         {
             public override String Name { get { return "日线金叉;周线金叉"; } }
 
-            public override List<TradeBout> DoBuy(TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
+            public override TradeRecords DoBuy(TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
             {
                 TimeSeries<ITimeSeriesItem<List<double>>> dayFunds = ds.FundTrendCreateOrLoad(TimeUnit.day);
                 TimeSeries<ITimeSeriesItem<List<double>>> weekFunds = ds.FundTrendCreateOrLoad(TimeUnit.week);
@@ -193,7 +200,7 @@ namespace insp.Security.Strategy.Alpha.Sell
                 if (dayFunds == null || dayFunds.Count <= 0 || weekFunds == null || weekFunds.Count <= 0 || dayCross == null || dayCross.Count <= 0 || weedCross == null || weedCross.Count <= 0)
                     return null;
 
-                List<TradeBout> bouts = new List<TradeBout>();
+                TradeRecords tr = new TradeRecords(ds.Code);
                 DateTime begin = backtestParam.BeginDate;
                 DateTime end = backtestParam.EndDate;
                 double p_day_low = strategyParam.Get<double>("day_low");
@@ -225,16 +232,16 @@ namespace insp.Security.Strategy.Alpha.Sell
 
                     TradeBout bout = new TradeBout(ds.Code);
                     bout.RecordTrade(1, dayCrossItem.Date, TradeDirection.Buy, dayLineItem.CLOSE, (int)(p_getinMode.Value / dayLineItem.CLOSE), 0, 0, Name);
-                    bouts.Add(bout);
+                    tr.Bouts.Add(bout);
                 }
-                return bouts;
+                return tr;
             }
         }
         internal class ModeC : Mode
         {
             public override String Name { get { return "日线偏离;周线金叉"; } }
 
-            public override List<TradeBout> DoBuy(TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
+            public override TradeRecords DoBuy(TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
             {
                 TimeSeries<ITimeSeriesItem<List<double>>> dayFunds = ds.FundTrendCreateOrLoad(TimeUnit.day);
                 TimeSeries<ITimeSeriesItem<List<double>>> weekFunds = ds.FundTrendCreateOrLoad(TimeUnit.week);
@@ -244,7 +251,7 @@ namespace insp.Security.Strategy.Alpha.Sell
                 if (dayFunds == null || dayFunds.Count <= 0 || weekFunds == null || weekFunds.Count <= 0 || dayCross == null || dayCross.Count <= 0 || weekCross == null || weekCross.Count <= 0)
                     return null;
 
-                List<TradeBout> bouts = new List<TradeBout>();
+                TradeRecords tr = new TradeRecords(ds.Code);
                 DateTime begin = backtestParam.BeginDate;
                 DateTime end = backtestParam.EndDate;
                 double p_day_low = strategyParam.Get<double>("day_low");
@@ -274,9 +281,9 @@ namespace insp.Security.Strategy.Alpha.Sell
 
                     TradeBout bout = new TradeBout(ds.Code);
                     bout.RecordTrade(1, dayFundItem.Date, TradeDirection.Buy, dayLineItem.CLOSE, (int)(p_getinMode.Value / dayLineItem.CLOSE), 0, 0, Name);
-                    bouts.Add(bout);
+                    tr.Bouts.Add(bout);
                 }
-                return bouts;
+                return tr;
             }
 
         }
@@ -284,7 +291,7 @@ namespace insp.Security.Strategy.Alpha.Sell
         {
             public override String Name { get { return "日线偏离;周线偏离"; } }
 
-            public override List<TradeBout> DoBuy(TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
+            public override TradeRecords DoBuy(TimeSerialsDataSet ds, Properties strategyParam, BacktestParameter backtestParam)
             {
                 TimeSeries<ITimeSeriesItem<List<double>>> dayFunds = ds.FundTrendCreateOrLoad(TimeUnit.day);
                 TimeSeries<ITimeSeriesItem<List<double>>> weekFunds = ds.FundTrendCreateOrLoad(TimeUnit.week);
@@ -294,7 +301,7 @@ namespace insp.Security.Strategy.Alpha.Sell
                 if (dayFunds == null || dayFunds.Count <= 0 || weekFunds == null || weekFunds.Count <= 0 || dayCross == null || dayCross.Count <= 0 || weekCross == null || weekCross.Count <= 0)
                     return null;
 
-                List<TradeBout> bouts = new List<TradeBout>();
+                TradeRecords tr = new TradeRecords(ds.Code);
                 DateTime begin = backtestParam.BeginDate;
                 DateTime end = backtestParam.EndDate;
                 double p_day_low = strategyParam.Get<double>("day_low");
@@ -324,9 +331,9 @@ namespace insp.Security.Strategy.Alpha.Sell
 
                     TradeBout bout = new TradeBout(ds.Code);
                     bout.RecordTrade(1, dayFundItem.Date, TradeDirection.Buy, dayLineItem.CLOSE, (int)(p_getinMode.Value / dayLineItem.CLOSE), 0, 0, Name);
-                    bouts.Add(bout);
+                    tr.Bouts.Add(bout);
                 }
-                return bouts;
+                return tr;
             }
         }
 

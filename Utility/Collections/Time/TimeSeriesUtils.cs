@@ -164,46 +164,7 @@ namespace insp.Utility.Collections.Time
             }
             return results;
         }
-
-        /// <summary>
-        /// 例如：MA(C，20)表示20日的平均收盘价。C表示CLOSE。
-        ///EMA(X, N)指数平滑移动平均
-        ///求X的N日指数平滑移动平均，它真正的公式表达是：当日指数平均值=平滑系数*（当日指数值-昨日指数平均值）+昨日指数平均值；平滑系数=2/（周期单位+1）；由以上公式推导开，得到：EMA(C, N)=2*C/(N+1)+(N-1)/(N+1)*昨天的指数收盘平均值；
-        ///算法是：若Y=EMA(X，N)，则Y=［2*X+(N-1)*Y’］/(N+1)，其中Y’表示上一周期的Y值。
-        ///EMA引用函数在计算机上使用递归算法很容易实现，但不容易理解。例举分析说明EMA函数。
-        ///X是变量，每天的X值都不同，从远到近地标记，它们分别记为X1，X2，X3，….，Xn
-        ///如果N = 1，则EMA(X，1)=［2*X1+(1-1)*Y’］/(1+1)=X1
-        ///如果N = 2，则EMA(X，2)=［2*X2+(2-1)*Y’］/(2+1)=(2/3)*X2+(1/3)X1
-        ///如果N = 3，则EMA(X，3)=［2*X3+(3-1)*Y’］/(3+1)=［2*X3+2*((2/3)*X2+(1/3)*X1)］/4=(1 /2)*X3+(1/3)*X2+(1/6)*X1
-        ///如果N = 4，则EMA(X，4)=［2*X4+(4-1)*Y’］/(4+1)=2/5*X4+3/5*((1/2)*X3+(1/3)*X2+(1 /6)*X1)=2/5*X4+3/10*X3+1/5*X2+1/10*X1
-        ///如果N = 5，则EMA(X，5)=2/(5+1)*X5+(5-1)/(5+1)(2/5*X4+3/10*X3+3/15*X2+3/30*X1)=(1/3)*X5+(4/15)*X4+(3/15)*X3+(2/15)*X2+(1/15)*X1
-        ///任何时候系数之和恒为1。如果X是常量，每天的X值都不变，则EMA(X, N)=MA(X, N).
-        ///从以上的例举分析中，我们可以看到时间周期越近的X值它的权重越大，说明EMA函数对近期的X值加强了权重比，更能及时反映近期X值的波动情况。所以EMA比Ma更具参考价值，而ema 也不容易出现死叉和金叉，所以一旦出现要立即作出反映！对周线处理，ema就更加稳定了
-        /// </summary>
-        /// <param name="ts"></param>
-        /// <param name="num"></param>
-        /// <returns></returns>
-        /*public static TimeSeries<ITimeSeriesItem<double>> EMA(this TimeSeries<ITimeSeriesItem<double>> ts, int num)
-        {
-            int denominator = num * (num + 1) / 2;
-            TimeSeries<ITimeSeriesItem<double>> results = new TimeSeries<ITimeSeriesItem<double>>();
-            for(int i=num-1;i<ts.Count;i++)
-            {
-                double sum = 0;
-                for(int j=num;j>=1;j--)                
-                    sum += (j*1.0 / denominator) * ts[i + j - num].Value;
-
-                TimeSeriesItem<double> item = new TimeSeriesItem<double>()
-                {
-                    Date = ts[i].Date,
-                    Value = sum
-                };
-
-                results.Add(item);
-            }
-            return results;
-        }*/
-
+        
         public static void EMA(this TimeSeries<ITimeSeriesItem<double>> output, TimeSeries<ITimeSeriesItem> input,String valueName, int num,DateTime begin,DateTime end)
         {
             if (input == null || output == null) return;

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DateDetailRecord.cs" />
+    <Compile Include="Evolution\EvolutionComputer.cs" />
     <Compile Include="GetInMode.cs" />
     <Compile Include="IBuyerSeller.cs" />
     <Compile Include="StrategyConfiguration.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="IStrategyInstance.cs" />
     <Compile Include="IStrategyMeta.cs" />
     <Compile Include="StrategyContext.cs" />
+    <Compile Include="Trade\HoldRecord.cs" />
     <Compile Include="Trade\TotalStat.cs" />
     <Compile Include="Trade\TradeBout.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,6 +73,10 @@
     <ProjectReference Include="..\Security.Data\Security.Data.csproj">
       <Project>{49422822-1a5b-4a3a-9e40-615cc2b17bf8}</Project>
       <Name>Security.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Security.Trade\Security.Trade.csproj">
+      <Project>{8bcb6228-bd0a-4bbb-a0c4-d79931340826}</Project>
+      <Name>Security.Trade</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utility\Utility.csproj">
       <Project>{2283784a-04e5-4e13-b147-40ee6d829304}</Project>

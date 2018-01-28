@@ -39,6 +39,7 @@ namespace insp.Security.Data.Indicator
     public static class TradingLineUtils
     {
         
+
         /// <summary>
         /// 买线:EMA(CLOSE,3),COLORRED,LINETHICK1;
         /// 卖线:EMA(SLOPE(CLOSE,21)*20+CLOSE,42),COLORBLUE,LINETHICK2;

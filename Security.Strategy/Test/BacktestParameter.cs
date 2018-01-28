@@ -16,12 +16,13 @@ namespace insp.Security.Strategy
     public class BacktestParameter : Properties
     {
         #region 参数
+        public String StrategyName { get { return Get<String>("strategy"); } }
         public String Runparallel { get { return Get<String>("parallel"); } }
         public String batchno { get { return Get<String>("batchno"); } }
         public int BatchNo { get { return Get<int>("batchno"); } }
         public String Serialno { get { return Get<String>("serialno", ""); } }
         public double Initfunds { get { return Get<double>("funds"); } }
-
+        public String Optimization { get { return Get<String>("optimization"); } }
         public int TaskCount { get { return Get<int>("taskcount"); } }
         public double Volumecommission { get { return Get<double>("volumecommission"); } }
         public double Stampduty { get { return Get<double>("stampduty"); } }
@@ -33,11 +34,11 @@ namespace insp.Security.Strategy
         public String Codefilename { get { return Get<String>("codefile"); } }
 
         public String StateFileName { get { return Resultpath + Serialno + ".state"; } }
-        public String ResultFileName { get { return Resultpath + Serialno + ".result"; } }
-        public String DateRecordFileName { get { return Resultpath + Serialno + ".date"; } }
-        public String DateDetailFileName { get { return Resultpath + Serialno + ".date.bout"; } }
+        public String ResultFileName { get { return Resultpath + Serialno + ".result.csv"; } }
+        public String DateRecordFileName { get { return Resultpath + Serialno + ".date.csv"; } }
+        public String DateDetailFileName { get { return Resultpath + Serialno + ".date.bout.csv"; } }
 
-        public String BatchResultFileName { get { return Resultpath + batchno + ".result"; } }
+        public String BatchResultFileName { get { return Resultpath + batchno + ".result.csv"; } }
         
         #endregion
 

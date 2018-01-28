@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Collections;
-
+using insp.Utility.Text;
 
 namespace insp.Utility.Bean
 {
@@ -120,6 +120,8 @@ namespace insp.Utility.Bean
             if (props == null || props.Count <= 0) return;
             props.ForEach(x => this.Put(x.Name, x.Value));
         }
+
+        
         #endregion
 
         #region 文件读写
@@ -196,6 +198,8 @@ namespace insp.Utility.Bean
             }
             return prop;
         }
+
+        
         /// <summary>
         /// 保存
         /// </summary>
@@ -366,6 +370,44 @@ namespace insp.Utility.Bean
                     ps.beforeComments.Add(tk, beforeComments[k]);
             }
             return results;
+        }
+        #endregion
+
+        #region 转文本
+        public String ToText(String FMT = TextUtils.FMT_PV, String ignoreKeys="",String keysep=",",bool includeBeforeComments=false,bool includeAfterComments=false)
+        {
+            if (keys == null || keys.Count <= 0) return "";
+            StringBuilder str = new StringBuilder();
+            List<String> ignoreKey = new List<string>(ignoreKeys.Split(','));
+            foreach(String key in keys)
+            {
+                if (ignoreKey.Contains(key)) continue;
+                if (str.ToString() != "") str.Append(keysep);
+                if (includeBeforeComments && beforeComments.ContainsKey(key))
+                    str.Append(beforeComments[key]+System.Environment.NewLine);
+
+                //PropertyDescriptor pd = GetPropertyDescriptor(key);                
+                str.Append(FMT.Replace("{$P}", key).Replace("{$V}",(String)values[key]));
+            }
+            return str.ToString();
+        }
+        public static Properties Parse(String s,String sep=",")
+        {
+            if (s == null || s == "") return new Properties();
+            String[] ss = s.Split(sep.ToArray());
+            if (ss == null || ss.Length <= 0) return new Properties();
+            Properties p = new Properties();
+            foreach (String ts in ss)
+            {
+                if (ts == null || ts.Trim() == "") continue;
+                String[] pv = ts.Split('=');
+                if (pv == null || pv.Length < 2) continue;
+                if (pv[0] == null || pv[0].Trim() == "" || pv[1] == null || pv[1].Trim()=="")
+                    continue;
+                p.keys.Add(pv[0].Trim());
+                p.values.Add(pv[0].Trim(),pv[1].Trim());
+            }
+            return p;
         }
         #endregion
     }

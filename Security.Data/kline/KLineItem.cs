@@ -42,8 +42,6 @@ namespace insp.Security.Data.kline
             );
             PropertyObjectUtils.RegisteProperties<KLineItem>(pdc);
         }
-
-
         #endregion
 
 
@@ -89,6 +87,10 @@ namespace insp.Security.Data.kline
         [Text(Format = "F2")]
         public double Turnover { get { return this.GetValue<double>("turnover"); } }
 
+        public double Average
+        {
+            get { return (HIGH + LOW + CLOSE + OPEN) / 4; }
+        }
 
         #endregion
 
