@@ -35,6 +35,8 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.button12 = new System.Windows.Forms.Button();
+            this.button11 = new System.Windows.Forms.Button();
             this.label16 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -72,8 +74,6 @@
             this.dataGridView5 = new System.Windows.Forms.DataGridView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.button11 = new System.Windows.Forms.Button();
-            this.button12 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -189,6 +189,26 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "控制";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(497, 180);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(73, 23);
+            this.button12.TabIndex = 29;
+            this.button12.Text = "取消执行";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(418, 180);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(73, 23);
+            this.button11.TabIndex = 28;
+            this.button11.Text = "继续执行";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
             // label16
             // 
@@ -530,26 +550,6 @@
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(131, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
-            // 
-            // button11
-            // 
-            this.button11.Location = new System.Drawing.Point(418, 180);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(73, 23);
-            this.button11.TabIndex = 28;
-            this.button11.Text = "继续执行";
-            this.button11.UseVisualStyleBackColor = true;
-            this.button11.Click += new System.EventHandler(this.button11_Click);
-            // 
-            // button12
-            // 
-            this.button12.Location = new System.Drawing.Point(497, 180);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(73, 23);
-            this.button12.TabIndex = 29;
-            this.button12.Text = "取消执行";
-            this.button12.UseVisualStyleBackColor = true;
-            this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
             // MainForm
             // 
